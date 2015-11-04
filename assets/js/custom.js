@@ -153,12 +153,24 @@
 			}
 
 			else {	
-					$.post( "http://104.236.211.149:7777/send_mail", formData)
-						.done(function( data ) {
-							response.html('<i class="fa fa-success"></i> Message was sent successfully!').fadeIn(500);
-						})
-						.error(function( data) {
-							response.html('<i class="fa fa-success"></i> Message was sent successfully!').fadeIn(500);
+					// $.post("http://104.236.211.149:7777/send_mail", formData)
+					// 	.done(function( data ) {
+					// 		response.html('<i class="fa fa-success"></i> Message was sent successfully!').fadeIn(500);
+					// 	})
+					// 	.error(function( data) {
+					// 		response.html('<i class="fa fa-success"></i> Message was sent successfully!').fadeIn(500);
+					// 	});
+					
+					 $.ajax({
+							type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+							url         : 'assets/php/contact.php', // the url where we want to POST
+							data        : formData, // our data object
+							dataType    : 'json', // what type of data do we expect back from the server
+							encode      : true,
+							success		: function(res){
+											var ret = $.parseJSON(JSON.stringify(res));
+											response.html(ret.message).fadeIn(500);
+							}
 						});
 				}           
             	return false;
