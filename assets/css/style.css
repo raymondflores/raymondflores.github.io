@@ -978,3 +978,8 @@ figure.effect-bubba:hover p {
 	height: 225px;
 }
 
+.fig-link {
+	text-decoration: underline;
+	color: white;
+}
+
