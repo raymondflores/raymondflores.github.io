@@ -171,7 +171,7 @@ AOS.init({
 			}
 		});
 	};
-	// scrollWindow();
+	scrollWindow();
 
 
 
