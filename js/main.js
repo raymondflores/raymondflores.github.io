@@ -7,14 +7,14 @@ AOS.init({
 
 	"use strict";
 
-	$(window).stellar({
-		responsive: true,
-		parallaxBackgrounds: true,
-		parallaxElements: true,
-		horizontalScrolling: false,
-		hideDistantElements: false,
-		scrollProperty: 'scroll'
-	});
+	// $(window).stellar({
+	// 	responsive: true,
+	// 	parallaxBackgrounds: true,
+	// 	parallaxElements: true,
+	// 	horizontalScrolling: false,
+	// 	hideDistantElements: false,
+	// 	scrollProperty: 'scroll'
+	// });
 
 
 	var fullHeight = function () {
@@ -385,23 +385,23 @@ AOS.init({
 		sections.push($($(this).attr('href')));
 
 	})
-	$(window).scroll(function (e) {
-		// scrollTop retains the value of the scroll top with the reference at the middle of the page
-		var scrollTop = $(this).scrollTop() + ($(window).height() / 2);
-		//cycle through the values in sections array
-		for (var i in sections) {
-			var section = sections[i];
-			//if scrollTop variable is bigger than the top offset of a section in the sections array then 
-			if (scrollTop > section.offset().top) {
-				var scrolled_id = section.attr('id');
-			}
-		}
-		if (scrolled_id !== id) {
-			id = scrolled_id;
-			$($navbara).removeClass('current');
-			$('#navi a[href="#' + id + '"]').addClass('current');
-		}
-	})
+	// $(window).scroll(function (e) {
+	// 	// scrollTop retains the value of the scroll top with the reference at the middle of the page
+	// 	var scrollTop = $(this).scrollTop() + ($(window).height() / 2);
+	// 	//cycle through the values in sections array
+	// 	for (var i in sections) {
+	// 		var section = sections[i];
+	// 		//if scrollTop variable is bigger than the top offset of a section in the sections array then 
+	// 		if (scrollTop > section.offset().top) {
+	// 			var scrolled_id = section.attr('id');
+	// 		}
+	// 	}
+	// 	if (scrolled_id !== id) {
+	// 		id = scrolled_id;
+	// 		$($navbara).removeClass('current');
+	// 		$('#navi a[href="#' + id + '"]').addClass('current');
+	// 	}
+	// })
 })(jQuery);
 
 hash = function (h) {
