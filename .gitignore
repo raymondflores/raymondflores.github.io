@@ -1,3 +1,14 @@
 prepos-6.config
 single.html
 .DS_Store
+
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Misc
+*.log
+.env*

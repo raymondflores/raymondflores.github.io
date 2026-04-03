@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#0a0f1e"/>
+  <!-- Subtle border -->
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.25" fill="none" stroke="url(#border-grad)" stroke-width="1.5"/>
+  <!-- RF monogram -->
+  <text x="16" y="22" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-weight="800" font-size="14" letter-spacing="-0.5" fill="#38bdf8">RF</text>
+</svg>
