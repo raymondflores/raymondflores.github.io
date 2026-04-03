@@ -61,6 +61,7 @@ const skillCategories: SkillCategory[] = [
     title: "AI-Assisted Engineering",
     icon: Bot,
     skills: [
+      "Claude",
       "Cursor",
       "Amazon Q",
       "Kiro",
