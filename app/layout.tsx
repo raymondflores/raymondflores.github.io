@@ -34,11 +34,6 @@ export const metadata: Metadata = {
     siteName: "Raymond Flores",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    site: "@raymondf22",
-    creator: "@raymondf22",
-  },
 };
 
 export const viewport: Viewport = {

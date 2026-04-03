@@ -25,7 +25,6 @@ export function Header() {
             <span className="text-primary">R</span>aymond Flores
           </a>
 
-          {/* Desktop Navigation */}
           <ul className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <li key={item.href}>
@@ -39,7 +38,6 @@ export function Header() {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-foreground"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -49,7 +47,6 @@ export function Header() {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         <div
           className={cn(
             "md:hidden overflow-hidden transition-all duration-300",

@@ -12,9 +12,6 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <section id="about" className="sr-only">
-          <h2>About</h2>
-        </section>
         <Experience />
         <Skills />
         <Education />

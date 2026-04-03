@@ -34,7 +34,6 @@ body {
   color: var(--color-primary-foreground);
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }

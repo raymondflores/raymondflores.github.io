@@ -20,10 +20,9 @@ const socialLinks = [
 
 export function Hero() {
   return (
-    <section className="min-h-screen flex items-center pt-20">
+    <section id="about" className="min-h-screen flex items-center pt-20">
       <div className="max-w-6xl mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Name & Navigation */}
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl font-bold text-foreground text-balance">
@@ -43,17 +42,7 @@ export function Hero() {
               millions of users.
             </p>
 
-            {/* Navigation Links */}
             <nav className="space-y-3">
-              <a
-                href="#about"
-                className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-foreground transition-all" />
-                <span className="text-sm font-medium uppercase tracking-widest">
-                  About
-                </span>
-              </a>
               <a
                 href="#experience"
                 className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
@@ -72,9 +61,17 @@ export function Hero() {
                   Skills
                 </span>
               </a>
+              <a
+                href="#contact"
+                className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-foreground transition-all" />
+                <span className="text-sm font-medium uppercase tracking-widest">
+                  Contact
+                </span>
+              </a>
             </nav>
 
-            {/* Social Links */}
             <div className="flex items-center gap-4 pt-4">
               {socialLinks.map((link) => (
                 <a
@@ -82,7 +79,7 @@ export function Hero() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                   aria-label={link.label}
                 >
                   <link.icon size={20} />
@@ -91,12 +88,9 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right Column - About Summary */}
           <div className="space-y-6">
             <p className="text-foreground leading-relaxed text-lg">
-              {
-                "I'm a developer passionate about crafting high-performance, scalable web applications. My work lies at the intersection of engineering excellence and user experience, creating products that not only work well but are meticulously built for scale."
-              }
+              {"I'm a developer passionate about crafting high-performance, scalable web applications. My work lies at the intersection of engineering excellence and user experience, creating products that not only work well but are meticulously built for scale."}
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Currently, I&apos;m a Senior Front End Engineer at{" "}
