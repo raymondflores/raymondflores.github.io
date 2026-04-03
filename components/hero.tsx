@@ -113,9 +113,9 @@ export function Hero() {
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl scale-110 pointer-events-none" />
               <div className="relative w-64 h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-primary/20 glow-primary">
                 <img
-                  src="/raymond.png"
+                  src="/raymond.jpg"
                   alt="Raymond Flores"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-[center_15%]"
                 />
               </div>
             </div>
