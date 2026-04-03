@@ -39,7 +39,7 @@ export function Header() {
               ))}
             </ul>
             <a
-              href="/RaymondFloresResume.pdf"
+              href="/Raymond_Flores_2026.pdf"
               download
               className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-all"
             >
@@ -77,7 +77,7 @@ export function Header() {
             ))}
             <li>
               <a
-                href="/RaymondFloresResume.pdf"
+                href="/Raymond_Flores_2026.pdf"
                 download
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"
               >

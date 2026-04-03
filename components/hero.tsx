@@ -73,7 +73,7 @@ export function Hero() {
                 </a>
               ))}
               <a
-                href="/RaymondFloresResume.pdf"
+                href="/Raymond_Flores_2026.pdf"
                 download
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
               >
@@ -122,7 +122,7 @@ export function Hero() {
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse-dot shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-foreground">Caesars Sportsbook</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Senior Front End Engineer</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Senior Software Engineer</p>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-border">
