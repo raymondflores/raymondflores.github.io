@@ -18,11 +18,6 @@ const socialLinks = [
   },
 ];
 
-const stats = [
-  { value: "10+", label: "Years" },
-  { value: "$4.5M", label: "Raised" },
-  { value: "7+", label: "Companies" },
-];
 
 export function Hero() {
   return (
@@ -120,17 +115,21 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Stat cards */}
-            <div className="flex gap-3 w-full max-w-xs">
-              {stats.map(({ value, label }) => (
-                <div
-                  key={label}
-                  className="flex-1 p-3 rounded-xl bg-card/60 border border-border backdrop-blur-sm text-center hover:border-primary/30 transition-colors"
-                >
-                  <div className="text-xl font-bold text-primary">{value}</div>
-                  <div className="text-xs text-muted mt-0.5">{label}</div>
+            {/* Currently at card */}
+            <div className="w-full max-w-xs p-4 rounded-xl bg-card/60 border border-border backdrop-blur-sm hover:border-primary/30 transition-colors">
+              <p className="text-xs text-muted uppercase tracking-widest mb-3 font-medium">Currently at</p>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse-dot shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Caesars Sportsbook</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Senior Front End Engineer</p>
                 </div>
-              ))}
+              </div>
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="text-xs text-muted leading-relaxed">
+                  Building auth systems &amp; growth features for millions of users across web &amp; mobile.
+                </p>
+              </div>
             </div>
           </div>
         </div>
