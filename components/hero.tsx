@@ -18,10 +18,13 @@ const socialLinks = [
   },
 ];
 
-const stats = [
-  { value: "10+", label: "Years" },
-  { value: "$4.5M", label: "Raised" },
-  { value: "7+", label: "Companies" },
+const techTags = [
+  "React",
+  "TypeScript",
+  "React Native",
+  "Next.js",
+  "Node.js",
+  "GraphQL",
 ];
 
 export function Hero() {
@@ -120,16 +123,15 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Stat cards */}
-            <div className="flex gap-3 w-full max-w-xs">
-              {stats.map(({ value, label }) => (
-                <div
-                  key={label}
-                  className="flex-1 p-3 rounded-xl bg-card/60 border border-border backdrop-blur-sm text-center hover:border-primary/30 transition-colors"
+            {/* Tech tags */}
+            <div className="flex flex-wrap gap-2 w-full max-w-xs">
+              {techTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full bg-primary/10 border border-primary/20 text-primary"
                 >
-                  <div className="text-xl font-bold text-primary">{value}</div>
-                  <div className="text-xs text-muted mt-0.5">{label}</div>
-                </div>
+                  {tag}
+                </span>
               ))}
             </div>
           </div>
