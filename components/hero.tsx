@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Download } from "lucide-react";
 
 const socialLinks = [
   {
@@ -18,103 +18,120 @@ const socialLinks = [
   },
 ];
 
+const stats = [
+  { value: "10+", label: "Years" },
+  { value: "$4.5M", label: "Raised" },
+  { value: "7+", label: "Companies" },
+];
+
 export function Hero() {
   return (
-    <section id="about" className="min-h-screen flex items-center pt-20">
-      <div className="max-w-6xl mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+      {/* Dot grid background */}
+      <div className="absolute inset-0 dot-grid opacity-100" />
+
+      {/* Glow blobs */}
+      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="relative max-w-6xl mx-auto px-6 py-20 w-full">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Content */}
           <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold text-foreground text-balance">
-                Raymond Flores
+            {/* Availability badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot" />
+              Open to new opportunities
+            </div>
+
+            {/* Name + Title */}
+            <div className="space-y-3">
+              <h1 className="text-6xl lg:text-7xl font-bold leading-none gradient-text">
+                Raymond<br />Flores
               </h1>
-              <p className="text-xl text-primary font-medium">
+              <p className="text-xl text-muted-foreground font-medium">
                 Senior Software Engineer
               </p>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin size={16} />
-                <span>Austin, TX</span>
+              <div className="flex items-center gap-1.5 text-muted">
+                <MapPin size={13} />
+                <span className="text-sm">Austin, TX</span>
               </div>
             </div>
 
-            <p className="text-muted-foreground leading-relaxed max-w-md">
-              I build accessible, high-performance web applications for
-              millions of users.
+            {/* Bio */}
+            <p className="text-muted-foreground leading-relaxed max-w-lg">
+              {"Passionate about crafting high-performance, scalable web applications. I build products that work well and are meticulously designed for scale — currently doing that at Caesars Sportsbook."}
             </p>
 
-            <nav className="space-y-3">
-              <a
-                href="#experience"
-                className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-foreground transition-all" />
-                <span className="text-sm font-medium uppercase tracking-widest">
-                  Experience
-                </span>
-              </a>
-              <a
-                href="#skills"
-                className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-foreground transition-all" />
-                <span className="text-sm font-medium uppercase tracking-widest">
-                  Skills
-                </span>
-              </a>
-              <a
-                href="#contact"
-                className="group flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-foreground transition-all" />
-                <span className="text-sm font-medium uppercase tracking-widest">
-                  Contact
-                </span>
-              </a>
-            </nav>
-
-            <div className="flex items-center gap-4 pt-4">
+            {/* Social + Resume buttons */}
+            <div className="flex items-center gap-3 flex-wrap">
               {socialLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                  aria-label={link.label}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card/60 text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium backdrop-blur-sm"
                 >
-                  <link.icon size={20} />
+                  <link.icon size={15} />
+                  {link.label}
                 </a>
               ))}
+              <a
+                href="/RaymondFloresResume.pdf"
+                download
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <Download size={15} />
+                Resume
+              </a>
             </div>
+
+            {/* Section nav */}
+            <nav className="space-y-2.5 pt-2">
+              {[
+                { label: "Experience", href: "#experience" },
+                { label: "Skills", href: "#skills" },
+                { label: "Contact", href: "#contact" },
+              ].map(({ label, href }) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="group flex items-center gap-4 text-muted hover:text-foreground transition-colors"
+                >
+                  <span className="w-8 h-px bg-muted group-hover:w-16 group-hover:bg-primary transition-all duration-300" />
+                  <span className="text-xs font-medium uppercase tracking-widest">{label}</span>
+                </a>
+              ))}
+            </nav>
           </div>
 
-          <div className="space-y-6">
-            <p className="text-foreground leading-relaxed text-lg">
-              {"I'm a developer passionate about crafting high-performance, scalable web applications. My work lies at the intersection of engineering excellence and user experience, creating products that not only work well but are meticulously built for scale."}
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Currently, I&apos;m a Senior Front End Engineer at{" "}
-              <a
-                href="https://www.caesars.com/sportsbook-and-casino"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground font-medium hover:text-primary transition-colors"
-              >
-                Caesars Sportsbook
-              </a>
-              , where I build authentication systems, growth features, and
-              experimentation platforms used by millions of users across web
-              and mobile.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              With 10+ years of experience, I&apos;ve worked across sports
-              betting, startups, and large enterprises including{" "}
-              <span className="text-foreground font-medium">Tesla</span>,{" "}
-              <span className="text-foreground font-medium">Ticketmaster</span>
-              , and early-stage startups where I helped raise{" "}
-              <span className="text-foreground font-medium">$4.5M</span> in
-              funding.
-            </p>
+          {/* Right: Photo + Stats */}
+          <div className="flex flex-col items-center lg:items-center gap-6">
+            {/* Profile photo */}
+            <div className="relative">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl scale-110 pointer-events-none" />
+              <div className="relative w-64 h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-primary/20 glow-primary">
+                <img
+                  src="/raymond.png"
+                  alt="Raymond Flores"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            </div>
+
+            {/* Stat cards */}
+            <div className="flex gap-3 w-full max-w-xs">
+              {stats.map(({ value, label }) => (
+                <div
+                  key={label}
+                  className="flex-1 p-3 rounded-xl bg-card/60 border border-border backdrop-blur-sm text-center hover:border-primary/30 transition-colors"
+                >
+                  <div className="text-xl font-bold text-primary">{value}</div>
+                  <div className="text-xs text-muted mt-0.5">{label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
