@@ -15,13 +15,16 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Raymond Flores | Senior Software Engineer",
   description:
-    "Senior Software Engineer with 10+ years of experience building and scaling high-traffic web and mobile applications. Expert in React, TypeScript, and modern frontend architecture.",
+    "Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top.",
   keywords: [
     "Software Engineer",
-    "React",
-    "TypeScript",
-    "Frontend",
     "Full Stack",
+    "React",
+    "React Native",
+    "TypeScript",
+    "Node.js",
+    "GraphQL",
+    "Astro",
     "Austin",
     "Texas",
   ],
@@ -29,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Raymond Flores | Senior Software Engineer",
     description:
-      "Senior Software Engineer with 10+ years of experience building high-traffic web and mobile applications.",
+      "Full-stack engineer with 10+ years in TypeScript, React, and Node — designing APIs, choosing rendering strategies, and shipping the interfaces on top.",
     url: "https://raymondflores.github.io",
     siteName: "Raymond Flores",
     type: "website",

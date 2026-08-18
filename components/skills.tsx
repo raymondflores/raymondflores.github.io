@@ -1,4 +1,4 @@
-import { Code2, Monitor, Server, FlaskConical, BarChart3, Bot } from "lucide-react";
+import { Code2, Monitor, Server, CreditCard, Cloud, FlaskConical, Bot } from "lucide-react";
 
 interface SkillCategory {
   title: string;
@@ -10,24 +10,23 @@ const skillCategories: SkillCategory[] = [
   {
     title: "Languages",
     icon: Code2,
-    skills: ["JavaScript", "TypeScript"],
+    skills: ["TypeScript", "JavaScript", "SQL"],
   },
   {
     title: "Front End",
     icon: Monitor,
     skills: [
       "React",
-      "React Native",
-      "Expo",
+      "React Native (Expo)",
       "Next.js",
+      "Astro",
+      "Vue/Nuxt",
+      "Vite",
       "Redux",
       "Zustand",
       "React Query",
       "Tailwind CSS",
-      "Apollo Client",
-      "HTML",
-      "CSS",
-      "Firebase",
+      "Performance optimization",
     ],
   },
   {
@@ -39,35 +38,50 @@ const skillCategories: SkillCategory[] = [
       "GraphQL",
       "Apollo Server",
       "TypeGraphQL",
-      "REST APIs",
+      "REST",
       "WebSockets",
-      "SQL",
-      "NoSQL",
-      "Supabase",
       "PostgreSQL",
+      "MySQL",
+      "MongoDB",
+      "Redis",
     ],
   },
   {
-    title: "Testing",
+    title: "Payments",
+    icon: CreditCard,
+    skills: ["Stripe", "Braintree"],
+  },
+  {
+    title: "Cloud & Infra",
+    icon: Cloud,
+    skills: [
+      "AWS",
+      "GCP (Cloud Run)",
+      "Supabase",
+      "GitLab CI",
+      "GitHub Actions",
+      "EAS",
+    ],
+  },
+  {
+    title: "Observability & Testing",
     icon: FlaskConical,
-    skills: ["Jest", "React Testing Library", "Chai", "Mocha", "NightwatchJS"],
+    skills: [
+      "New Relic",
+      "Dynatrace",
+      "Rollbar",
+      "Jest",
+      "React Testing Library",
+      "Playwright",
+    ],
   },
   {
-    title: "Analytics & Compliance",
-    icon: BarChart3,
-    skills: ["GA4", "Google Tag Manager", "OneTrust", "MixPanel", "FullStory"],
-  },
-  {
-    title: "AI-Assisted Engineering",
+    title: "AI",
     icon: Bot,
     skills: [
-      "Claude",
-      "Cursor",
-      "Amazon Q",
-      "Kiro",
-      "LLM-assisted workflows",
-      "Prompt Engineering",
-      "AI-accelerated prototyping",
+      "LLM-assisted development",
+      "Multi-agent orchestration",
+      "Automated workflows",
     ],
   },
 ];

@@ -45,7 +45,7 @@ export function Hero() {
                 Raymond<br />Flores
               </h1>
               <p className="text-xl text-muted-foreground font-medium">
-                Senior Software Engineer
+                Senior Full-Stack Engineer
               </p>
               <div className="flex items-center gap-1.5 text-muted">
                 <MapPin size={13} />
@@ -55,7 +55,7 @@ export function Hero() {
 
             {/* Bio */}
             <p className="text-muted-foreground leading-relaxed max-w-lg">
-              {"Passionate about crafting high-performance, scalable web applications. I build products that work well and are meticulously designed for scale — currently doing that at Caesars Sportsbook."}
+              {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
             </p>
 
             {/* Social + Resume buttons */}
@@ -86,6 +86,7 @@ export function Hero() {
             <nav className="space-y-2.5 pt-2">
               {[
                 { label: "Experience", href: "#experience" },
+                { label: "Projects", href: "#projects" },
                 { label: "Skills", href: "#skills" },
                 { label: "Contact", href: "#contact" },
               ].map(({ label, href }) => (
@@ -127,7 +128,7 @@ export function Hero() {
               </div>
               <div className="mt-3 pt-3 border-t border-border">
                 <p className="text-xs text-muted leading-relaxed">
-                  Building auth systems &amp; growth features for millions of users across web &amp; mobile.
+                  Building the multi-brand content platform &amp; the auth surfaces millions of users sign in through.
                 </p>
               </div>
             </div>
