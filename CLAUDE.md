@@ -30,6 +30,7 @@ components/
   header.tsx      # fixed nav with mobile menu + resume download
   hero.tsx        # above-the-fold intro + currently-at status card
   experience.tsx  # timeline of work history (data lives inline)
+  projects.tsx    # side projects (data lives inline)
   skills.tsx
   education.tsx
   contact.tsx
@@ -60,9 +61,10 @@ The build runs `next build` which outputs a static site to `./out` (configured v
 
 All content is hardcoded in the component files:
 - **Work history** → `components/experience.tsx` (`experiences` array)
+- **Projects** → `components/projects.tsx` (`projects` array)
 - **Skills** → `components/skills.tsx`
 - **Education** → `components/education.tsx`
 - **Contact links** → `components/contact.tsx`
 - **Nav items** → `components/header.tsx` (`navItems` array)
 - **Metadata / SEO** → `app/layout.tsx`
-- **Resume PDF** → `public/RaymondFloresResume.pdf`
+- **Resume PDF** → `public/Raymond_Flores_2026.pdf` (linked from header, hero, and contact)
