@@ -33,11 +33,12 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Content */}
           <div className="space-y-8">
-            {/* Availability badge */}
+            {/* Availability badge — commented out for now
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot" />
               Open to new opportunities
             </div>
+            */}
 
             {/* Name + Title */}
             <div className="space-y-3">
