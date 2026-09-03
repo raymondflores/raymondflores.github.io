@@ -33,11 +33,12 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Content */}
           <div className="space-y-8">
-            {/* Availability badge */}
+            {/* Availability badge — commented out for now
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot" />
               Open to new opportunities
             </div>
+            */}
 
             {/* Name + Title */}
             <div className="space-y-3">
@@ -55,7 +56,7 @@ export function Hero() {
 
             {/* Bio */}
             <p className="text-muted-foreground leading-relaxed max-w-lg">
-              {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
+              {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Experience spans platform work at consumer scale to founding two companies where I built everything from device firmware to payment ledgers. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
             </p>
 
             {/* Social + Resume buttons */}
