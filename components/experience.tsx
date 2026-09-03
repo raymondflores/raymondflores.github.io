@@ -12,7 +12,7 @@ interface ExperienceItem {
 
 const experiences: ExperienceItem[] = [
   {
-    period: "2023 — Present",
+    period: "Mar 2023 — Present",
     title: "Senior Software Engineer",
     company: "Caesars Sportsbook",
     companyUrl: "https://www.caesars.com/sportsbook-and-casino",
@@ -40,7 +40,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    period: "2021 — 2024",
+    period: "Sep 2021 — Sep 2024",
     title: "Co-Founder & CTO",
     company: "Nifted",
     description:
@@ -64,7 +64,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    period: "2021 — 2023",
+    period: "Jul 2021 — Feb 2023",
     title: "Senior Software Engineer",
     company: "Evaluate.xyz",
     description:
@@ -84,7 +84,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    period: "2021",
+    period: "Mar 2021 — Sep 2021",
     title: "Software Engineer",
     company: "Tesla",
     companyUrl: "https://www.tesla.com",
@@ -97,7 +97,7 @@ const experiences: ExperienceItem[] = [
     technologies: ["React", "PHP", "Internal Tools"],
   },
   {
-    period: "2020 — 2021",
+    period: "Sep 2020 — Mar 2021",
     title: "Senior Software Engineer",
     company: "Boom Sports",
     description:
@@ -110,7 +110,7 @@ const experiences: ExperienceItem[] = [
     technologies: ["React Native", "Node.js", "Express", "MongoDB", "Redis"],
   },
   {
-    period: "2019 — 2020",
+    period: "Jan 2019 — Aug 2020",
     title: "Senior Software Engineer II",
     company: "Ticketmaster",
     companyUrl: "https://www.ticketmaster.com",
@@ -124,27 +124,7 @@ const experiences: ExperienceItem[] = [
     technologies: ["React", "Redux", "Real-time Dashboards"],
   },
   {
-    period: "2018 — 2019",
-    title: "Senior Backend Engineer",
-    company: "Justuno",
-    description:
-      "Built platform integrations and backend services for the e-commerce conversion platform.",
-    highlights: [
-      "Built an OAuth 2.0 authorization server enabling third-party applications to authenticate against the platform",
-      "Built a push notification service (Node/Express, PostgreSQL) with a client-facing React dashboard",
-      "Built Shopify, BigCommerce, and Cloudflare integrations, increasing platform adoption and daily installs; automated browser and unit testing (Selenium, Nightwatch, Mocha, Chai)",
-    ],
-    technologies: [
-      "Node.js",
-      "Express",
-      "PostgreSQL",
-      "OAuth 2.0",
-      "Shopify",
-      "BigCommerce",
-    ],
-  },
-  {
-    period: "2016 — 2019",
+    period: "Oct 2016 — Jan 2019",
     title: "Co-Founder & CTO",
     company: "PokerSports",
     description:
