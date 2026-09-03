@@ -40,13 +40,13 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    period: "2021 — 2023",
-    title: "Co-Founder & Lead Engineer",
+    period: "2021 — 2024",
+    title: "Co-Founder & CTO",
     company: "Nifted",
     description:
       "Co-founded a consumer hardware company selling networked digital display frames; sole technical founder of four.",
     highlights: [
-      "Raised $150K and shipped ~200 units — the first edition sold out in 10 minutes",
+      "Raised $150K and shipped ~200 units — first edition sold out in 10 minutes",
       "Built the entire stack: Raspberry Pi device software, a React/TypeScript display UI inside a Flutter shell, a Flutter companion app, a Nuxt/Vue storefront, and the API underneath",
       "Architected a Node/TypeScript GraphQL API (Apollo Server, TypeGraphQL, TypeORM, PostgreSQL) aggregating five third-party APIs and two blockchains into one normalized schema serving three heterogeneous clients, shaping payloads per client",
       "Built end-to-end Stripe payments — checkout sessions, webhook handling, order lifecycle, per-edition inventory — plus device identity, account claiming, and JWT/argon2 auth",
@@ -144,8 +144,8 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    period: "2016 — 2018",
-    title: "Co-Founder & Tech Lead",
+    period: "2016 — 2019",
+    title: "Co-Founder & CTO",
     company: "PokerSports",
     description:
       "Built and operated FantasyStud, a real-money fantasy sports platform, end to end.",

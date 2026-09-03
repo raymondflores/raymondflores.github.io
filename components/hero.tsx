@@ -55,7 +55,7 @@ export function Hero() {
 
             {/* Bio */}
             <p className="text-muted-foreground leading-relaxed max-w-lg">
-              {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
+              {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Experience spans platform work at consumer scale to founding two companies where I built everything from device firmware to payment ledgers. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
             </p>
 
             {/* Social + Resume buttons */}

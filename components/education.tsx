@@ -9,10 +9,7 @@ export function Education() {
         </h2>
 
         <div className="group relative grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
-          {/* Date */}
-          <div className="text-xs text-muted font-mono md:text-right pt-0.5">
-            2011 — 2015
-          </div>
+          <div className="hidden md:block" />
 
           {/* Content */}
           <div className="flex items-start gap-4 p-5 rounded-xl border border-border bg-card/30 hover:border-primary/30 hover:bg-card/60 transition-all -mx-2">
