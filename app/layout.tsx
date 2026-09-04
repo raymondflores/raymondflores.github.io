@@ -14,6 +14,12 @@ const jetbrainsMono = JetBrains_Mono({
 
 const siteUrl = "https://raymondflores.github.io";
 
+// Runs before first paint so a stored light theme is applied without a flash of
+// the dark palette. Dark is the default: anything other than an explicit
+// "light" choice leaves :root alone. Keep the storage key in sync with
+// components/theme-toggle.tsx.
+const themeRestoreScript = `try{if(localStorage.getItem("theme")==="light"){document.documentElement.dataset.theme="light"}}catch(e){}`;
+
 // JSON-LD Person schema — mirrors the content hardcoded in the section
 // components (hero, experience, skills, education, contact). Keep in sync
 // when those change.
@@ -116,7 +122,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  // Updated at runtime by the theme toggle; this is the dark default.
+  themeColor: "#0a0f1e",
   width: "device-width",
   initialScale: 1,
 };
@@ -127,7 +134,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeRestoreScript }} />
+      </head>
       <body className="font-sans antialiased">
         {children}
         <script

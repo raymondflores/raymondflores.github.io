@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -124,15 +125,21 @@ export function Header() {
               <Download size={14} />
               Resume
             </a>
+            <ThemeToggle />
           </div>
 
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* Toggle sits outside the collapsible menu on mobile so it stays one
+              tap away. */}
+          <div className="flex items-center gap-3 md:hidden">
+            <ThemeToggle />
+            <button
+              className="text-foreground"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
 
         <div
