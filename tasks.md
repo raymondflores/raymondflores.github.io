@@ -19,16 +19,26 @@ Mechanical, no design risk.
 - Uses a *route* (`app/opengraph-image.png/route.tsx`), not the `opengraph-image` file convention. The convention emits an **extensionless** file (`out/opengraph-image`), which GitHub Pages serves as `application/octet-stream` — social scrapers reject that. The route form exports to a real `.png` path.
 - `export const dynamic = "force-static"` is required under `output: 'export'`.
 - Fonts are read from `assets/fonts/*.ttf` at build time rather than fetched from Google, so the build has no network dependency. These are build-only and never shipped to the browser.
-- The portrait is `assets/og-portrait.jpg` (460x460, ~90KB), inlined as a data URI. It is a separate build-time crop from `public/raymond.jpg`.
+- The portrait is `assets/og-portrait.jpg` (460x460, ~90KB), inlined as a data URI. It is a separate build-time crop from the full-resolution portrait, which task 2 moved to `assets/raymond-original.jpg`.
 - Satori does **not** tile background gradients, so the site's dot-grid texture is intentionally omitted from the card — it would render as flat color. Glow blobs use `radial-gradient` because satori also ignores `filter: blur()`.
 
-### 2. Optimize the hero photo
-- [ ] Resize `public/raymond.jpg` (currently 1390x1723, 862KB) down to ~600px
-- [ ] Convert to WebP/AVIF with a JPG fallback
-- [ ] Add explicit `width`/`height` to the `<img>` in `components/hero.tsx` to kill layout shift
-- [ ] Add `fetchPriority="high"` — it's the LCP element
+### 2. Optimize the hero photo — DONE
+- [x] Resize `public/raymond.jpg` (was 1390x1723, 862KB) down to 600x744
+- [x] Convert to WebP/AVIF with a JPG fallback, served via `<picture>`
+- [x] Add explicit `width`/`height` to the `<img>` in `components/hero.tsx` to kill layout shift
+- [x] Add `fetchPriority="high"` — it's the LCP element
 
 **Why:** One file is ~37% of the 2.3MB build, served unoptimized (`images.unoptimized: true`) and displayed at 288px. Expect ~40-60KB after.
+
+**Result:** 862KB -> 42KB on the wire (AVIF, which is what Chrome, Firefox, and Safari 16+ actually fetch). Fallbacks: WebP 66KB, JPG 67KB.
+
+**Notes for future edits:**
+- The 1390x1723 master moved to `assets/raymond-original.jpg`. It is the source for regenerating the three `public/raymond.*` files and is **not** shipped to the browser. Task 4's repo cleanup must keep it, alongside `assets/fonts/` and `assets/og-portrait.jpg`.
+- `public/raymond.jpg` keeps its original path so the URL stays stable; only its contents changed.
+- Encoder settings, all off a `sharp(...).rotate().resize({ width: 600 })` base: JPG `quality: 72, mozjpeg: true, progressive: true`; WebP `quality: 72, effort: 6, smartSubsample: true`; AVIF `quality: 50, effort: 6`. Visually indistinguishable from q80 at the 288px render size.
+- `sharp` is intentionally **not** a project dependency — these are pre-generated build *inputs*, not build outputs. Install it ad hoc to regenerate.
+- Aspect ratio is preserved rather than pre-cropped square, so `object-[center_15%]` still controls the framing. Changing one without the other shifts the crop.
+- React emits `srcSet` and `fetchPriority` into the static HTML with their camelCase spelling. That is fine — HTML attribute names are case-insensitive. Verified in Chrome that only `raymond.avif` is fetched and `fetchpriority` reads back as `high`.
 
 ### 3. Structured data + crawler files
 - [ ] Add JSON-LD `Person` schema to `app/layout.tsx` (jobTitle, worksFor, `sameAs` GitHub/LinkedIn, `knowsAbout` skills, address Austin TX)
@@ -37,18 +47,22 @@ Mechanical, no design risk.
 
 **Why:** JSON-LD is how Google builds a knowledge panel for a name search. All the data is already hardcoded in the components.
 
-### 4. Repo cleanup
-- [ ] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
-- [ ] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
-- [ ] Remove the 7 tracked `.DS_Store` files and add `.DS_Store` to `.gitignore`
+### 4. Repo cleanup — DONE
+- [x] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
+- [x] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
+- [x] Remove the 12 tracked `.DS_Store` files (`.gitignore` already listed `.DS_Store`; they predated it)
 
 **Why:** ~178 of ~190 tracked files are dead weight unreferenced by any component. Anyone clicking through to the repo from the portfolio sees a template graveyard.
 
+**Notes for future edits:**
+- 182 files removed; 29 remain tracked. Verified with `pnpm build`: same six routes, and `out/opengraph-image.png` still renders at 1200x630.
+- Also dropped two now-dead `.gitignore` entries for deleted template files: `prepos-6.config` (itself a typo — the real file was `prepros-6.config`, so it was never actually ignored) and `single.html`.
+
 ## Pass 2 — Make it feel alive
 
-### 5. Scroll-spy nav + progress bar
-- [ ] `IntersectionObserver` to highlight the active section in `components/header.tsx`
-- [ ] Thin scroll-progress bar under the fixed header
+### 5. Scroll-spy nav + progress bar — DONE
+- [x] `IntersectionObserver` to highlight the active section in `components/header.tsx`
+- [x] Thin scroll-progress bar under the fixed header
 
 **Why:** Five anchors with no active state — nothing tells you where you are on a long single page.
 
@@ -63,11 +77,17 @@ Mechanical, no design risk.
 - The hero is deliberately left out. It is above the fold and holds the LCP element; fading it from `opacity: 0` on load would delay LCP for no benefit.
 - `prefers-reduced-motion: reduce` disables the animation entirely (see task 7 for the rest of the motion guards).
 
-### 7. Respect `prefers-reduced-motion`
-- [ ] Guard `html { scroll-behavior: smooth }`
-- [ ] Guard the two infinite `animate-pulse-dot` instances
+### 7. Respect `prefers-reduced-motion` — DONE
+- [x] Guard `html { scroll-behavior: smooth }`
+- [x] Guard the two infinite `animate-pulse-dot` instances
 
 **Why:** Currently unhandled, and it is the kind of detail another engineer notices.
+
+**Notes for future edits:**
+- One `@media (prefers-reduced-motion: reduce)` block in `app/globals.css`, right under the `html` rule it overrides.
+- It resets `scroll-behavior` to `auto` and collapses every animation and transition to `0.01ms` with `animation-iteration-count: 1`. Near-zero rather than `none` so animations still *finish*: elements land on their final keyframe instead of being stuck at the initial one. That matters for `.animate-fade-up` (starts at `opacity: 0`), which task 6 will start using — it inherits the guard for free.
+- The `!important` is required to beat Tailwind utilities like `transition-all duration-300`.
+- No JS depends on `transitionend`/`animationend`, so collapsing durations cannot strand any UI. The mobile menu in `components/header.tsx` is a pure class toggle and simply snaps open.
 
 ## Pass 3 — Content & extras
 
