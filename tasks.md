@@ -66,15 +66,16 @@ Mechanical, no design risk.
 
 **Why:** Five anchors with no active state — nothing tells you where you are on a long single page.
 
-**Notes for future edits:**
-- The observer uses `rootMargin: "-80px 0px -55% 0px"` — a band starting just below the fixed header. The callback keeps a `Set` of ids currently in the band and picks the first one in `navItems` order, so overlapping sections resolve top-down.
-- `education` has no `id` and no nav entry. When it fills the band nothing intersects, the callback finds no candidate, and the previous section stays highlighted — that is intentional, not a bug.
-- The progress bar is JS (rAF-throttled scroll listener driving `scaleX`) rather than CSS `animation-timeline: scroll()`, so it works in browsers without scroll-driven animation support.
-- Active state is exposed as `aria-current`, with the underline (desktop) and dot (mobile) as `aria-hidden` decoration.
+### 6. Wire up scroll reveal — DONE
+- [x] Use the already-defined `.animate-fade-up` on section entry — it was defined and used nowhere
+- [x] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
 
-### 6. Wire up scroll reveal
-- [ ] Use the already-defined `.animate-fade-up` (`app/globals.css:74`) on section entry — it is currently defined and used nowhere
-- [ ] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
+**Notes for future edits:**
+- One class, two behaviors. `.animate-fade-up` on its own is a plain 0.5s load-time animation; inside `@supports (animation-timeline: view()) and (animation-duration: auto)` it is re-pointed at a view timeline (`animation-range: entry 15% entry 65%`). Chrome/Edge get the scroll-driven reveal; Safari and Firefox still get the fade, just on load. No JS, no `IntersectionObserver`.
+- The `and (animation-duration: auto)` half of the `@supports` test is load-bearing: the scroll-driven rule relies on `animation-duration: auto` to stretch the animation across the range, so a browser that ships `view()` without `auto` must fall back rather than get a 0.5s animation on a progress timeline.
+- **`overflow-hidden` breaks `view()`.** It makes the element a scroll container, so descendants resolve their view timeline against *it* instead of the document; the timeline is inactive and the animation silently never runs. The Skills and Contact sections use `overflow-clip` instead — same clipping of the glow blobs, no scroll container. Do not switch them back, and do not add `overflow-hidden` to an ancestor of a revealed element.
+- The hero is deliberately left out. It is above the fold and holds the LCP element; fading it from `opacity: 0` on load would delay LCP for no benefit.
+- `prefers-reduced-motion: reduce` disables the animation entirely (see task 7 for the rest of the motion guards).
 
 ### 7. Respect `prefers-reduced-motion` — DONE
 - [x] Guard `html { scroll-behavior: smooth }`
