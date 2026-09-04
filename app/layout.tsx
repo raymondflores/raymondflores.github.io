@@ -13,6 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://raymondflores.github.io"),
   title: "Raymond Flores | Senior Software Engineer",
   description:
     "Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top.",
@@ -36,6 +37,22 @@ export const metadata: Metadata = {
     url: "https://raymondflores.github.io",
     siteName: "Raymond Flores",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Raymond Flores — Senior Full-Stack Engineer",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Raymond Flores | Senior Software Engineer",
+    description:
+      "Full-stack engineer with 10+ years in TypeScript, React, and Node — designing APIs, choosing rendering strategies, and shipping the interfaces on top.",
+    images: ["/opengraph-image.png"],
   },
 };
 
