@@ -109,11 +109,19 @@ export function Hero() {
             <div className="relative">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl scale-110 pointer-events-none" />
               <div className="relative w-64 h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-primary/20 glow-primary">
-                <img
-                  src="/raymond.jpg"
-                  alt="Raymond Flores"
-                  className="w-full h-full object-cover object-[center_15%]"
-                />
+                <picture>
+                  <source srcSet="/raymond.avif" type="image/avif" />
+                  <source srcSet="/raymond.webp" type="image/webp" />
+                  <img
+                    src="/raymond.jpg"
+                    alt="Raymond Flores"
+                    width={600}
+                    height={744}
+                    fetchPriority="high"
+                    decoding="async"
+                    className="w-full h-full object-cover object-[center_15%]"
+                  />
+                </picture>
               </div>
             </div>
 
