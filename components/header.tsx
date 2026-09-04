@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -12,8 +12,68 @@ const navItems = [
   { label: "Contact", href: "#contact" },
 ];
 
+const sectionIds = navItems.map((item) => item.href.slice(1));
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState(sectionIds[0]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll-spy: a section is "active" once its top crosses the band just below
+  // the fixed header. Sections without a nav entry (education) leave the band
+  // empty, which keeps the previous section highlighted.
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length === 0) return;
+
+    const visible = new Set<string>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+
+        const next = sectionIds.find((id) => visible.has(id));
+        if (next) setActiveSection(next);
+      },
+      { rootMargin: "-80px 0px -55% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(
+        scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0
+      );
+    };
+
+    const onScroll = () => {
+      if (frame === 0) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
@@ -28,16 +88,33 @@ export function Header() {
 
           <div className="hidden md:flex items-center gap-8">
             <ul className="flex items-center gap-6">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
+              {navItems.map((item) => {
+                const isActive = activeSection === item.href.slice(1);
+
+                return (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      aria-current={isActive ? "true" : undefined}
+                      className={cn(
+                        "relative text-sm font-medium transition-colors",
+                        isActive
+                          ? "text-primary"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {item.label}
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "absolute -bottom-1.5 left-0 right-0 h-px bg-primary transition-opacity",
+                          isActive ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
             <a
               href="/Raymond_Flores_2026.pdf"
@@ -65,22 +142,39 @@ export function Header() {
           )}
         >
           <ul className="flex flex-col gap-4 pb-4">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const isActive = activeSection === item.href.slice(1);
+
+              return (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "flex items-center gap-2 text-sm font-medium transition-colors",
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "w-1 h-4 rounded-full bg-primary transition-opacity",
+                        isActive ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
             <li>
               <a
                 href="/Raymond_Flores_2026.pdf"
                 download
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary pl-3"
               >
                 <Download size={14} />
                 Download Resume
@@ -89,6 +183,16 @@ export function Header() {
           </ul>
         </div>
       </nav>
+
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden"
+      >
+        <div
+          className="h-full w-full origin-left bg-gradient-to-r from-primary to-accent"
+          style={{ transform: `scaleX(${scrollProgress})` }}
+        />
+      </div>
     </header>
   );
 }
