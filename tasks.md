@@ -103,8 +103,18 @@ Mechanical, no design risk.
 ### 10. Command palette (Cmd+K)
 - [ ] Fuzzy-jump to sections, copy email, open GitHub/LinkedIn, download resume
 
-### 11. Light mode
-- [ ] CSS variables in `globals.css` are already structured for it; add a toggle
+### 11. Light mode — DONE
+- [x] Move the palette out of `@theme inline` into plain `:root` custom properties, with a `:root[data-theme="light"]` override
+- [x] Sun/moon toggle in the header (desktop, and outside the collapsible menu on mobile)
+- [x] Persist the choice in `localStorage`, restored before first paint by an inline script in `app/layout.tsx`
+
+**Notes for future edits:**
+- The `@theme inline` block no longer holds color literals — it maps `--color-*` to `var(--background)` and friends. That indirection is the whole trick: with `inline`, Tailwind emits the *value* of a theme token into each utility, so a palette declared directly in `@theme` bakes `#0a0f1e` into `.bg-background` and can never be swapped at runtime. Pointing the tokens at plain custom properties makes the utility compile to `background-color: var(--background)` instead. Verified in the built CSS.
+- **Dark stays the default** for a first-time visitor regardless of their OS setting — the site is dark-first and the OG card matches. To follow `prefers-color-scheme` instead, wrap the light tokens in a `@media (prefers-color-scheme: light)` block scoped to `:root:not([data-theme="dark"])` and add a matching `:root[data-theme="dark"]` block so the toggle still wins both ways.
+- Light `--primary` is sky-600 / `--accent` is cyan-600, not the dark theme's 400-weights — those wash out against a near-white background.
+- The three decorative classes at the bottom of `globals.css` (`gradient-text`, `dot-grid`, `glow-primary`) paint with raw colors rather than Tailwind tokens, so each got its own variable. Any new decorative CSS that hardcodes a color needs the same treatment; the section components need none, since they were already using semantic tokens exclusively.
+- `color-scheme` is set per theme so form controls, the scrollbar, and the browser's own chrome follow along. The `theme-color` meta is static in `viewport` (the dark default) and rewritten by the toggle at runtime — it cannot be expressed declaratively since the theme is not tied to a media query.
+- `<html>` needs `suppressHydrationWarning`: the restore script mutates `data-theme` before React hydrates. The toggle reads the attribute back on mount rather than re-deriving it, so the icon always matches what is on screen.
 
 ### 12. Fix the `lint` script before Next 16 lands
 - [ ] `package.json` has `"lint": "next lint"`. This still works on Next 15, but `next lint` was removed in Next 16 — on the `chore/next-16-upgrade` branch it errors with `Invalid project directory provided, no such directory: ./lint`
