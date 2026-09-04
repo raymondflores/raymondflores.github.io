@@ -47,12 +47,16 @@ Mechanical, no design risk.
 
 **Why:** JSON-LD is how Google builds a knowledge panel for a name search. All the data is already hardcoded in the components.
 
-### 4. Repo cleanup
-- [ ] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
-- [ ] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
-- [ ] Remove the 7 tracked `.DS_Store` files and add `.DS_Store` to `.gitignore`
+### 4. Repo cleanup — DONE
+- [x] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
+- [x] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
+- [x] Remove the 12 tracked `.DS_Store` files (`.gitignore` already listed `.DS_Store`; they predated it)
 
 **Why:** ~178 of ~190 tracked files are dead weight unreferenced by any component. Anyone clicking through to the repo from the portfolio sees a template graveyard.
+
+**Notes for future edits:**
+- 182 files removed; 29 remain tracked. Verified with `pnpm build`: same six routes, and `out/opengraph-image.png` still renders at 1200x630.
+- Also dropped two now-dead `.gitignore` entries for deleted template files: `prepos-6.config` (itself a typo — the real file was `prepros-6.config`, so it was never actually ignored) and `single.html`.
 
 ## Pass 2 — Make it feel alive
 
@@ -66,11 +70,17 @@ Mechanical, no design risk.
 - [ ] Use the already-defined `.animate-fade-up` (`app/globals.css:74`) on section entry — it is currently defined and used nowhere
 - [ ] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
 
-### 7. Respect `prefers-reduced-motion`
-- [ ] Guard `html { scroll-behavior: smooth }`
-- [ ] Guard the two infinite `animate-pulse-dot` instances
+### 7. Respect `prefers-reduced-motion` — DONE
+- [x] Guard `html { scroll-behavior: smooth }`
+- [x] Guard the two infinite `animate-pulse-dot` instances
 
 **Why:** Currently unhandled, and it is the kind of detail another engineer notices.
+
+**Notes for future edits:**
+- One `@media (prefers-reduced-motion: reduce)` block in `app/globals.css`, right under the `html` rule it overrides.
+- It resets `scroll-behavior` to `auto` and collapses every animation and transition to `0.01ms` with `animation-iteration-count: 1`. Near-zero rather than `none` so animations still *finish*: elements land on their final keyframe instead of being stuck at the initial one. That matters for `.animate-fade-up` (starts at `opacity: 0`), which task 6 will start using — it inherits the guard for free.
+- The `!important` is required to beat Tailwind utilities like `transition-all duration-300`.
+- No JS depends on `transitionend`/`animationend`, so collapsing durations cannot strand any UI. The mobile menu in `components/header.tsx` is a pure class toggle and simply snaps open.
 
 ## Pass 3 — Content & extras
 
