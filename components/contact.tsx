@@ -23,18 +23,18 @@ const contactLinks = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
+    <section id="contact" className="py-24 relative overflow-clip">
       {/* Background glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-6">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-16">
+        <h2 className="animate-fade-up text-xs font-semibold uppercase tracking-widest text-primary mb-16">
           Contact
         </h2>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* CTA */}
-          <div className="space-y-6">
+          <div className="animate-fade-up space-y-6">
             <h3 className="text-3xl lg:text-4xl font-bold text-foreground text-balance leading-tight">
               {"Let's build something great together."}
             </h3>
@@ -69,7 +69,7 @@ export function Contact() {
                 href={link.href}
                 target={link.href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 p-4 rounded-xl border border-border bg-card/30 hover:border-primary/30 hover:bg-card/60 transition-all"
+                className="animate-fade-up group flex items-center gap-4 p-4 rounded-xl border border-border bg-card/30 hover:border-primary/30 hover:bg-card/60 transition-all"
               >
                 <div className="p-2 rounded-lg bg-card border border-border group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:text-primary text-muted transition-all">
                   <link.icon size={16} />

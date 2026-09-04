@@ -38,7 +38,7 @@ export function Projects() {
   return (
     <section id="projects" className="py-24">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-16">
+        <h2 className="animate-fade-up text-xs font-semibold uppercase tracking-widest text-primary mb-16">
           Projects
         </h2>
 
@@ -46,7 +46,7 @@ export function Projects() {
           {projects.map((project) => (
             <div
               key={project.name}
-              className="group p-6 rounded-xl border border-border bg-card/30 hover:border-primary/30 hover:bg-card/60 transition-all space-y-4"
+              className="animate-fade-up group p-6 rounded-xl border border-border bg-card/30 hover:border-primary/30 hover:bg-card/60 transition-all space-y-4"
             >
               <div className="flex items-baseline gap-3 flex-wrap">
                 <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">

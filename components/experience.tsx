@@ -151,7 +151,7 @@ export function Experience() {
   return (
     <section id="experience" className="py-24">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-16">
+        <h2 className="animate-fade-up text-xs font-semibold uppercase tracking-widest text-primary mb-16">
           Experience
         </h2>
 
@@ -164,7 +164,7 @@ export function Experience() {
             {experiences.map((exp, index) => (
               <div
                 key={index}
-                className="group relative grid md:grid-cols-[180px_1fr] gap-4 md:gap-10 pb-14 last:pb-0"
+                className="animate-fade-up group relative grid md:grid-cols-[180px_1fr] gap-4 md:gap-10 pb-14 last:pb-0"
               >
                 {/* Timeline dot */}
                 <div className="absolute left-0 top-[5px] -translate-x-1/2 w-2.5 h-2.5 rounded-full border-2 border-muted bg-background group-hover:border-primary group-hover:bg-primary/20 transition-all hidden md:block z-10" />
