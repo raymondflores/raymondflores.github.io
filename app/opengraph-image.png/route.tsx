@@ -73,7 +73,10 @@ export function GET() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", width: 660 }}>
-            {/* Availability badge */}
+            {/* Location badge. Deliberately NOT the hero's "Open to new
+                opportunities" pill — that badge is commented out in
+                components/hero.tsx, and the share card should not advertise
+                what the site itself suppresses. */}
             <div
               style={{
                 display: "flex",
@@ -89,15 +92,21 @@ export function GET() {
                 fontWeight: 600,
               }}
             >
-              <div
-                style={{
-                  width: 9,
-                  height: 9,
-                  borderRadius: 999,
-                  backgroundColor: "#38bdf8",
-                }}
-              />
-              Open to new opportunities
+              {/* lucide map-pin, inlined — satori renders SVG but not React icon components */}
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#38bdf8"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Austin, TX
             </div>
 
             <div
