@@ -37,12 +37,16 @@ Mechanical, no design risk.
 
 **Why:** JSON-LD is how Google builds a knowledge panel for a name search. All the data is already hardcoded in the components.
 
-### 4. Repo cleanup
-- [ ] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
-- [ ] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
-- [ ] Remove the 7 tracked `.DS_Store` files and add `.DS_Store` to `.gitignore`
+### 4. Repo cleanup — DONE
+- [x] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
+- [x] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
+- [x] Remove the 12 tracked `.DS_Store` files (`.gitignore` already listed `.DS_Store`; they predated it)
 
 **Why:** ~178 of ~190 tracked files are dead weight unreferenced by any component. Anyone clicking through to the repo from the portfolio sees a template graveyard.
+
+**Notes for future edits:**
+- 182 files removed; 29 remain tracked. Verified with `pnpm build`: same six routes, and `out/opengraph-image.png` still renders at 1200x630.
+- Also dropped two now-dead `.gitignore` entries for deleted template files: `prepos-6.config` (itself a typo — the real file was `prepros-6.config`, so it was never actually ignored) and `single.html`.
 
 ## Pass 2 — Make it feel alive
 
