@@ -61,11 +61,17 @@ Mechanical, no design risk.
 - [ ] Use the already-defined `.animate-fade-up` (`app/globals.css:74`) on section entry — it is currently defined and used nowhere
 - [ ] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
 
-### 7. Respect `prefers-reduced-motion`
-- [ ] Guard `html { scroll-behavior: smooth }`
-- [ ] Guard the two infinite `animate-pulse-dot` instances
+### 7. Respect `prefers-reduced-motion` — DONE
+- [x] Guard `html { scroll-behavior: smooth }`
+- [x] Guard the two infinite `animate-pulse-dot` instances
 
 **Why:** Currently unhandled, and it is the kind of detail another engineer notices.
+
+**Notes for future edits:**
+- One `@media (prefers-reduced-motion: reduce)` block in `app/globals.css`, right under the `html` rule it overrides.
+- It resets `scroll-behavior` to `auto` and collapses every animation and transition to `0.01ms` with `animation-iteration-count: 1`. Near-zero rather than `none` so animations still *finish*: elements land on their final keyframe instead of being stuck at the initial one. That matters for `.animate-fade-up` (starts at `opacity: 0`), which task 6 will start using — it inherits the guard for free.
+- The `!important` is required to beat Tailwind utilities like `transition-all duration-300`.
+- No JS depends on `transitionend`/`animationend`, so collapsing durations cannot strand any UI. The mobile menu in `components/header.tsx` is a pure class toggle and simply snaps open.
 
 ## Pass 3 — Content & extras
 
