@@ -95,10 +95,22 @@ Mechanical, no design risk.
 
 **Why:** The strongest quantitative proof on the site is buried in paragraph six of `components/experience.tsx`.
 
-### 9. BirdieLab case-study depth
-- [ ] Add screenshots or a phone-frame mockup to `components/projects.tsx`
+### 9. BirdieLab case-study depth — DONE
+- [x] Add three phone-frame screenshots to `components/projects.tsx` (scorecard, GPS, round summary)
+- [x] Serve them AVIF/WebP/JPG via `<picture>` with explicit `width`/`height`, like task 2's hero photo
+- [x] Split the project card into two columns at `lg` so the phones sit beside the writeup
 
 **Why:** One project, strong writeup, zero visuals.
+
+**Result:** ~43KB on the wire for all three (AVIF), lazy-loaded below the fold.
+
+**Notes for future edits:**
+- Sources are the three marketing screenshots from `birdielab.app` (1242x2688). The masters live in `assets/birdielab/*-original.webp` and are **not** shipped to the browser — same arrangement as `assets/raymond-original.jpg`.
+- Shipped files are `public/birdielab-{scorecard,gps,round-summary}.{avif,webp,jpg}` at 400x866. Encoder settings off a `sharp(...).resize({ width: 400 })` base: JPG `quality: 78, mozjpeg: true, progressive: true`; WebP `quality: 78, effort: 6, smartSubsample: true`; AVIF `quality: 60, effort: 6`. Higher than the hero photo's settings because these are UI screenshots with small text, and the sources are already once-lossy WebP.
+- `Project.screenshots` is optional and each entry's `src` is a path *stem* — the three extensions are appended in the markup. Adding a second project without screenshots needs no changes.
+- The card carries `min-w-0`. Without it the card is a grid item with the default `min-width: auto`, so the screenshot row's 530px of content stretched the card past the viewport and gave the whole page a horizontal scrollbar on mobile. Verified at 386px: `documentElement.scrollWidth === body.clientWidth`.
+- Below `sm` the row is a snap-scrolling flex strip that bleeds to the card edges (`-mx-6 px-6`), with the scrollbar hidden via `[scrollbar-width:none]` / `[&::-webkit-scrollbar]:hidden` — the site's global `::-webkit-scrollbar` rule only sets `width`, so a horizontal bar would have rendered at the browser default height. At `sm` and up it becomes a three-column grid.
+- On mobile the tech chips come before the screenshots; at `lg` the chips end the left column and the phones fill the right. That order swap is a consequence of the two-column split, not an oversight.
 
 ### 10. Command palette (Cmd+K)
 - [ ] Fuzzy-jump to sections, copy email, open GitHub/LinkedIn, download resume
