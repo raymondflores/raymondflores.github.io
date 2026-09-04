@@ -64,10 +64,16 @@ Mechanical, no design risk.
 
 ## Pass 3 — Content & extras
 
-### 8. Metrics strip in the hero
-- [ ] Surface three numbers from the Caesars bullets as stat tiles (+137% organic clicks, Lighthouse 65 -> 99, 0ms TBT)
+### 8. Metrics strip in the hero — DONE
+- [x] Surface three numbers from the Caesars bullets as stat tiles (+137% organic clicks, Lighthouse 65 -> 99, 0ms TBT)
+- [x] Full-width strip below the hero's two-column grid, linking to `#experience` for the full context
 
 **Why:** The strongest quantitative proof on the site is buried in paragraph six of `components/experience.tsx`.
+
+**Notes for future edits:**
+- Data lives in the `metrics` array at the top of `components/hero.tsx`, following the inline-data convention.
+- Values use `font-mono` + `tabular-nums` to echo the timeline's period labels; the numbers stay the only `text-primary` element in the strip so they read as the focal point.
+- Numbers are duplicated between `hero.tsx` and the first Caesars bullet in `experience.tsx` — if one changes, change both.
 
 ### 9. BirdieLab case-study depth
 - [ ] Add screenshots or a phone-frame mockup to `components/projects.tsx`

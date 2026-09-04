@@ -18,6 +18,23 @@ const socialLinks = [
   },
 ];
 
+const metrics = [
+  {
+    value: "+137%",
+    label: "Organic clicks",
+    detail: "vs. the client-side rendered CMS",
+  },
+  {
+    value: "65 → 99",
+    label: "Lighthouse performance",
+    detail: "after moving to build-time rendering",
+  },
+  {
+    value: "0 ms",
+    label: "Total blocking time",
+    detail: "on the rebuilt multi-brand platform",
+  },
+];
 
 export function Hero() {
   return (
@@ -134,6 +151,29 @@ export function Hero() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Metrics strip */}
+        <div className="mt-12 pt-8 border-t border-border">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            {metrics.map((metric) => (
+              <div key={metric.label} className="space-y-1.5">
+                <p className="font-mono text-3xl lg:text-4xl font-semibold text-primary tabular-nums">
+                  {metric.value}
+                </p>
+                <p className="text-xs font-medium uppercase tracking-widest text-foreground">
+                  {metric.label}
+                </p>
+                <p className="text-xs text-muted leading-relaxed">{metric.detail}</p>
+              </div>
+            ))}
+          </div>
+          <a
+            href="#experience"
+            className="inline-block mt-6 text-xs text-muted hover:text-primary transition-colors"
+          >
+            Measured on the Caesars Sportsbook content platform rebuild &rarr;
+          </a>
         </div>
       </div>
     </section>
