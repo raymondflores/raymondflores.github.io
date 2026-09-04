@@ -30,10 +30,11 @@ Mechanical, no design risk.
 
 **Why:** One file is ~37% of the 2.3MB build, served unoptimized (`images.unoptimized: true`) and displayed at 288px. Expect ~40-60KB after.
 
-### 3. Structured data + crawler files
-- [ ] Add JSON-LD `Person` schema to `app/layout.tsx` (jobTitle, worksFor, `sameAs` GitHub/LinkedIn, `knowsAbout` skills, address Austin TX)
-- [ ] Add `app/sitemap.ts`
-- [ ] Add `app/robots.ts`
+### 3. Structured data + crawler files — DONE
+- [x] Add JSON-LD `Person` schema to `app/layout.tsx` (jobTitle, worksFor, `alumniOf`, `sameAs` GitHub/LinkedIn, `knowsAbout` skills, address Austin TX)
+- [x] Add `app/sitemap.ts`
+- [x] Add `app/robots.ts`
+- [x] Verify `out/robots.txt`, `out/sitemap.xml`, and the `ld+json` script tag in `out/index.html`
 
 **Why:** JSON-LD is how Google builds a knowledge panel for a name search. All the data is already hardcoded in the components.
 
