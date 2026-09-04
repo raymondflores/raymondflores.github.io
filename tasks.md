@@ -51,11 +51,17 @@ Mechanical, no design risk.
 
 ## Pass 2 — Make it feel alive
 
-### 5. Scroll-spy nav + progress bar
-- [ ] `IntersectionObserver` to highlight the active section in `components/header.tsx`
-- [ ] Thin scroll-progress bar under the fixed header
+### 5. Scroll-spy nav + progress bar — DONE
+- [x] `IntersectionObserver` to highlight the active section in `components/header.tsx`
+- [x] Thin scroll-progress bar under the fixed header
 
 **Why:** Five anchors with no active state — nothing tells you where you are on a long single page.
+
+**Notes for future edits:**
+- The observer uses `rootMargin: "-80px 0px -55% 0px"` — a band starting just below the fixed header. The callback keeps a `Set` of ids currently in the band and picks the first one in `navItems` order, so overlapping sections resolve top-down.
+- `education` has no `id` and no nav entry. When it fills the band nothing intersects, the callback finds no candidate, and the previous section stays highlighted — that is intentional, not a bug.
+- The progress bar is JS (rAF-throttled scroll listener driving `scaleX`) rather than CSS `animation-timeline: scroll()`, so it works in browsers without scroll-driven animation support.
+- Active state is exposed as `aria-current`, with the underline (desktop) and dot (mobile) as `aria-hidden` decoration.
 
 ### 6. Wire up scroll reveal
 - [ ] Use the already-defined `.animate-fade-up` (`app/globals.css:74`) on section entry — it is currently defined and used nowhere
