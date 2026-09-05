@@ -110,7 +110,7 @@ page title, the JSON-LD `jobTitle`, and `CLAUDE.md` say "Senior Software Enginee
 disagreeing with the visible h1 is exactly what a search crawler notices.
 
 ### 10. Stop churning `sitemap.lastModified`
-- [ ] Replace `lastModified: new Date()` in `app/sitemap.ts` with a real content date
+- [x] Replace `lastModified: new Date()` in `app/sitemap.ts` with a real content date
 
 **Why:** Every build stamps "modified now" on the only URL in the sitemap, whether or not anything
 changed. It trains crawlers to ignore the signal.
