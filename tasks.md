@@ -66,6 +66,12 @@ Mechanical, no design risk.
 
 **Why:** Five anchors with no active state — nothing tells you where you are on a long single page.
 
+**Notes for future edits:**
+- The observer uses `rootMargin: "-80px 0px -55% 0px"` — a band starting just below the fixed header. The callback keeps a `Set` of ids currently in the band and picks the first one in `navItems` order, so overlapping sections resolve top-down.
+- `education` has no nav entry (task 10 later gave it an `id` for the command palette, but scroll-spy only observes ids drawn from `navItems`). When it fills the band nothing intersects, the callback finds no candidate, and the previous section stays highlighted — that is intentional, not a bug.
+- The progress bar is JS (rAF-throttled scroll listener driving `scaleX`) rather than CSS `animation-timeline: scroll()`, so it works in browsers without scroll-driven animation support.
+- Active state is exposed as `aria-current`, with the underline (desktop) and dot (mobile) as `aria-hidden` decoration.
+
 ### 6. Wire up scroll reveal — DONE
 - [x] Use the already-defined `.animate-fade-up` on section entry — it was defined and used nowhere
 - [x] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
@@ -113,8 +119,22 @@ Mechanical, no design risk.
 - Below `sm` the row is a snap-scrolling flex strip that bleeds to the card edges (`-mx-6 px-6`), with the scrollbar hidden via `[scrollbar-width:none]` / `[&::-webkit-scrollbar]:hidden` — the site's global `::-webkit-scrollbar` rule only sets `width`, so a horizontal bar would have rendered at the browser default height. At `sm` and up it becomes a three-column grid.
 - On mobile the tech chips come before the screenshots; at `lg` the chips end the left column and the phones fill the right. That order swap is a consequence of the two-column split, not an oversight.
 
-### 10. Command palette (Cmd+K)
-- [ ] Fuzzy-jump to sections, copy email, open GitHub/LinkedIn, download resume
+### 10. Command palette (Cmd+K) — DONE
+- [x] `components/command-palette.tsx` — ⌘K / Ctrl+K anywhere, plus a `⌘K` trigger button in the desktop header
+- [x] Fuzzy-jump to the six sections; copy email, send an email, download resume, open GitHub/LinkedIn
+- [x] Hand-rolled fuzzy matcher with match highlighting — no new dependency
+- [x] Full keyboard model (↑↓ / Home / End / ↵ / esc), `combobox` + `listbox` roles, focus trap and restore, `aria-live` toast for the copy result
+
+**Notes for future edits:**
+- Commands live in one `buildCommands()` array in the component. `keywords` are extra match terms that never render (so "cv" finds the resume, "utrgv" finds Education); they rank below label matches and do not light up the label.
+- The header is a client component but `app/page.tsx` is a server component, so the trigger button dispatches a `command-palette:open` window event (exported as `OPEN_EVENT`) rather than palette state being lifted into the page.
+- Task 5 deliberately left `education` without an `id`; the palette needs one to jump there, so it now has `id="education"`. This does **not** affect scroll-spy, which only observes ids drawn from `navItems`.
+- The scroll lock (`body { overflow: hidden }`) is set and cleared through `setPageLocked()`, and `close()` clears it **synchronously**. React does not commit the close — and so does not run the effect cleanup — until after the event handler returns, which is *after* `command.run()` has already fired; a still-locked body silently swallows the jump. This was a real bug caught in the browser, not a hypothetical.
+- Focus restoration uses `focus({ preventScroll: true })` for the same reason: the cleanup runs after a smooth scroll has started, and a scrolling `focus()` cancels it and snaps back to the top.
+- `html { scrollbar-gutter: stable }` was added to `globals.css` so locking the body does not shift the page under the overlay.
+- The ⌘/Ctrl label renders as `⌘K` on the server and is corrected after mount from `navigator.userAgent`, which keeps the static export free of hydration mismatches.
+- No scroll-lock or focus behavior depends on `transitionend`/`animationend`, so task 7's reduced-motion guard (which collapses durations to 0.01ms) cannot strand the palette.
+- Verified in Chrome: open/close, fuzzy typo tolerance ("cpye" → Copy email address), arrow navigation, jump-to-section, clipboard copy + toast, clean console with no hydration warnings.
 
 ### 11. Light mode — DONE
 - [x] Move the palette out of `@theme inline` into plain `:root` custom properties, with a `:root[data-theme="light"]` override
