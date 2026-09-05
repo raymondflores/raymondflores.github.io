@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # sitemap.ts reads the last content commit date from git history;
+          # the default shallow clone would leave it with only HEAD to look at.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
