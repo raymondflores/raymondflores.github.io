@@ -16,7 +16,8 @@ Personal portfolio and resume site for Raymond Flores, Senior Software Engineer.
 ```bash
 pnpm dev        # dev server with Turbopack
 pnpm build      # static export → ./out
-pnpm lint       # BROKEN — see Known Issues
+pnpm lint       # eslint (flat config in eslint.config.mjs)
+pnpm typecheck  # tsc --noEmit
 ```
 
 ## Project Structure
@@ -57,7 +58,9 @@ No PR preview deployments — merging to master is the deploy trigger.
 
 The build runs `next build` which outputs a static site to `./out` (configured via `output: 'export'` in next.config).
 
-CI runs `pnpm install` and `pnpm build` only — there is no lint or typecheck gate.
+CI runs `pnpm lint`, `pnpm typecheck`, then `pnpm build` — a lint error or a type error fails
+the deploy. The pnpm version comes from the `packageManager` field in `package.json`, so keep
+that in step with the pnpm you use locally.
 
 ## Conventions
 
@@ -83,10 +86,13 @@ All content is hardcoded in the component files:
 
 ## Known Issues
 
-- **`pnpm lint` is broken.** The script is `next lint`, which Next 16 removed — it fails with
-  `Invalid project directory provided, no such directory: ./lint`. There is no ESLint config file
-  and no `eslint` binary installed, so fixing it means a flat-config migration (`eslint.config.mjs`
-  + `"lint": "eslint ."`), not a one-line script change. `pnpm build` is unaffected, and CI only
-  runs `pnpm build`, so deploys are green — but nothing gates lint or type errors before deploy.
-- The Next 16 build rewrites `tsconfig.json` (`jsx: preserve` → `react-jsx`, adds a
-  `.next/dev/types` include) and `next-env.d.ts`. Those edits are expected; commit them.
+- **`react-hooks/set-state-in-effect` is set to `warn`, not `error`.** Four call sites trip it
+  (`theme-toggle.tsx`, `header.tsx`, and two in `command-palette.tsx`). All four read the DOM,
+  `navigator`, or open/close state in an effect on purpose — that is what keeps the server and
+  client renders identical through hydration. Reworking them (`useSyncExternalStore`, or moving the
+  reset into the open handler) is a real change to hydration-sensitive UI, so it is deliberately
+  left out of the lint migration. Until then the warnings are expected output of `pnpm lint`.
+- **Build scripts need approval.** pnpm 10+ blocks dependency postinstalls unless they are listed
+  in `pnpm-workspace.yaml` under `allowBuilds`. `unrs-resolver` (the native resolver behind
+  `eslint-import-resolver-typescript`) is approved there; without it `pnpm install` exits non-zero
+  and every `pnpm <script>` fails on the deps check before the script even runs.

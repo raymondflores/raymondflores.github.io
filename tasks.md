@@ -6,23 +6,44 @@ Measurements below are from a `pnpm build` on Next 16.3.4 at commit `e7d2072`.
 
 ## Pass 1 — Unbreak the toolchain
 
-### 1. Fix `pnpm lint` and finish the Next 16 migration
-- [ ] Replace `"lint": "next lint"` with `"lint": "eslint ."` and add a flat `eslint.config.mjs`
-      (`eslint-config-next` still ships the shareable config; there is no config file or `eslint`
-      binary in the project today)
-- [ ] Commit the `tsconfig.json` and `next-env.d.ts` edits the Next 16 build makes
+### 1. Fix `pnpm lint` and finish the Next 16 migration — done
+- [x] Replace `"lint": "next lint"` with `"lint": "eslint ."` and add a flat `eslint.config.mjs`
+      built on `eslint-config-next/core-web-vitals` + `/typescript`, with `eslint` and
+      `eslint-config-next` added as devDependencies
+- [x] Commit the `tsconfig.json` and `next-env.d.ts` edits the Next 16 build makes
       (`jsx: preserve` → `react-jsx`, plus a `.next/dev/types` include)
 
 **Why:** Next 16 removed `next lint`. On master today the script fails outright:
 `Invalid project directory provided, no such directory: ./lint`. `pnpm build` is unaffected,
 so this has been invisible — `node_modules` was still pinned at 15.5.25 locally.
 
-### 2. Gate deploys on lint + typecheck
-- [ ] Add `pnpm lint` and `tsc --noEmit` steps to `.github/workflows/nextjs.yml`
+**Left behind:** `react-hooks/set-state-in-effect` is set to `warn` rather than `error`. It flags
+four deliberate hydration-safe effects — see task 2a.
+
+### 2. Gate deploys on lint + typecheck — done
+- [x] Add `pnpm lint` and `tsc --noEmit` steps to `.github/workflows/nextjs.yml`
 - [ ] Consider splitting them into a `check` job that also runs on PRs, not just on push to master
 
 **Why:** CI runs `pnpm install` and `pnpm build` only. Nothing catches a type or lint error before
 it deploys. Depends on task 1 — there is no working lint command to call yet.
+
+**Also changed:** CI was on `pnpm/action-setup@v2` pinned to pnpm 8 against a `lockfileVersion: 9.0`
+lockfile. Now `packageManager: pnpm@11.25.0` in `package.json` drives `action-setup@v4`, and Node
+moved 20 → 22 because pnpm 11 requires `>=22.13`. A `pnpm-workspace.yaml` approves the
+`unrs-resolver` postinstall; without it pnpm 10+ exits non-zero from the deps check and every
+`pnpm <script>` fails before the script runs.
+
+### 2a. Promote `react-hooks/set-state-in-effect` back to an error
+- [ ] `components/theme-toggle.tsx:34` — reads `data-theme` off `<html>` after mount
+- [ ] `components/header.tsx:57` — platform sniff for the ⌘K vs Ctrl K label
+- [ ] `components/command-palette.tsx:233` — resets query/index on open
+- [ ] `components/command-palette.tsx:258` — resets index on every query change
+
+**Why:** All four are correct today — setting state in an effect is what keeps the server render and
+the client render identical through hydration. But `eslint-plugin-react-hooks` v7 flags the pattern,
+and the idiomatic replacements (`useSyncExternalStore` for the first two, moving the reset into the
+open/change handler for the last two) are cheaper to reason about. Scoped separately from task 1
+because it edits hydration-sensitive UI, not the toolchain.
 
 ## Pass 2 — Performance
 
