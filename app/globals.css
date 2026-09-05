@@ -157,6 +157,18 @@ body {
   }
 }
 
+/* Pairs with .animate-fade-up on above-the-fold content. Under a view()
+   timeline anything already on screen at load starts past the animation range
+   and so paints in its final state; without that support the load-time
+   fallback above would fade the element in from opacity 0, which is the wrong
+   trade in the hero. Drop the fallback only — where scroll-driven timelines
+   exist the reveal still runs when the element is scrolled back into view. */
+@supports not ((animation-timeline: view()) and (animation-duration: auto)) {
+  .reveal-in-view-only {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up {
     animation: none;

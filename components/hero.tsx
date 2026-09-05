@@ -1,5 +1,7 @@
 import { Github, Linkedin, Mail, MapPin, Download } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 const socialLinks = [
   {
     icon: Github,
@@ -18,10 +20,27 @@ const socialLinks = [
   },
 ];
 
+interface Metric {
+  value: string;
+  /** Spoken form for values whose glyphs do not read aloud, e.g. the arrow. */
+  valueLabel?: string;
+  label: string;
+  /** The headline number, tinted with the primary token instead of foreground. */
+  highlight?: boolean;
+}
+
+/* Pulled out of the Caesars timeline bullet in components/experience.tsx,
+   where these numbers sit mid-sentence and below the fold. */
+const metrics: Metric[] = [
+  { value: "+137%", label: "Organic clicks", highlight: true },
+  { value: "65 → 99", valueLabel: "65 to 99", label: "Lighthouse perf" },
+  { value: "0 ms", label: "Blocking time" },
+];
+
 
 export function Hero() {
   return (
-    <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-clip">
       {/* Dot grid background */}
       <div className="absolute inset-0 dot-grid opacity-100" />
 
@@ -58,6 +77,40 @@ export function Hero() {
             <p className="text-muted-foreground leading-relaxed max-w-lg">
               {"Full-stack engineer with 10+ years in TypeScript, React, and Node. I own the layer between services and the client — designing APIs, choosing rendering and architecture strategies, and shipping the interfaces on top. Experience spans platform work at consumer scale to founding two companies where I built everything from device firmware to payment ledgers. Comfortable where correctness matters: regulated gaming, real-money transactions, and production systems under load."}
             </p>
+
+            {/* Metrics strip */}
+            <div className="animate-fade-up reveal-in-view-only max-w-lg space-y-2">
+              <dl className="grid grid-cols-1 sm:grid-cols-3 rounded-xl border border-border bg-card/60 backdrop-blur-sm divide-y sm:divide-y-0 sm:divide-x divide-border">
+                {metrics.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="flex flex-col-reverse gap-1.5 px-4 py-3.5"
+                  >
+                    <dt className="text-xs font-medium uppercase tracking-widest text-muted">
+                      {metric.label}
+                    </dt>
+                    <dd
+                      className={cn(
+                        "text-2xl font-bold leading-none tabular-nums",
+                        metric.highlight ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      {metric.valueLabel ? (
+                        <>
+                          <span aria-hidden="true">{metric.value}</span>
+                          <span className="sr-only">{metric.valueLabel}</span>
+                        </>
+                      ) : (
+                        metric.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="text-xs text-muted">
+                From the Caesars content platform rebuild.
+              </p>
+            </div>
 
             {/* Social + Resume buttons */}
             <div className="flex items-center gap-3 flex-wrap">
