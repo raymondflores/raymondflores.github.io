@@ -314,7 +314,7 @@ export function CommandPalette() {
     <>
       {open && (
         <div
-          className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[15vh]"
+          className="no-print fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[15vh]"
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) close();
@@ -446,7 +446,7 @@ export function CommandPalette() {
       <div
         aria-live="polite"
         aria-atomic="true"
-        className="pointer-events-none fixed bottom-6 left-1/2 z-[70] -translate-x-1/2"
+        className="no-print pointer-events-none fixed bottom-6 left-1/2 z-[70] -translate-x-1/2"
       >
         {toast && (
           <p className="animate-fade-up rounded-lg border border-border bg-card px-4 py-2.5 text-xs text-foreground shadow-xl">

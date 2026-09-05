@@ -143,6 +143,9 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeRestoreScript }} />
       </head>
       <body className="font-sans antialiased">
+        <a href="#main-content" className="skip-link no-print">
+          Skip to content
+        </a>
         {children}
         <script
           type="application/ld+json"

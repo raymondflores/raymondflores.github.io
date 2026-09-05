@@ -23,11 +23,11 @@ export function Hero() {
   return (
     <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Dot grid background */}
-      <div className="absolute inset-0 dot-grid opacity-100" />
+      <div className="no-print absolute inset-0 dot-grid opacity-100" />
 
       {/* Glow blobs */}
-      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="no-print absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="no-print absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-6 py-20 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -107,7 +107,7 @@ export function Hero() {
           <div className="flex flex-col items-center lg:items-center gap-6">
             {/* Profile photo */}
             <div className="relative">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl scale-110 pointer-events-none" />
+              <div className="no-print absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl scale-110 pointer-events-none" />
               <div className="relative w-64 h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-primary/20 glow-primary">
                 <picture>
                   <source srcSet="/raymond.avif" type="image/avif" />

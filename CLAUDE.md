@@ -26,6 +26,7 @@ app/
   layout.tsx                    # root layout, metadata, JSON-LD Person schema,
                                 #   font setup, pre-paint theme restore script
   page.tsx                      # single page, composes all sections
+  not-found.tsx                 # styled 404 → out/404.html, served by GitHub Pages
   globals.css                   # CSS variables, theme palettes, base styles
   icon.svg                      # favicon
   opengraph-image.png/route.tsx # OG card, generated at build time via next/og
