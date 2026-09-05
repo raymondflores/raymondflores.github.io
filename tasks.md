@@ -1,156 +1,101 @@
 # Portfolio Site — Improvement Tasks
 
-Ranked by payoff-per-effort. Grouped into passes so related work lands together.
+Ranked by payoff-per-effort, grouped so related work lands together.
 
-## Pass 1 — Sharing, SEO, performance, hygiene
+Measurements below are from a `pnpm build` on Next 16.3.4 at commit `e7d2072`.
 
-Mechanical, no design risk.
+## Pass 1 — Unbreak the toolchain
 
-### 1. Open Graph / Twitter card image — DONE
-- [x] Add `app/opengraph-image.png/route.tsx` using `next/og` `ImageResponse`, generated at build time
-- [x] Match site palette: `#0a0f1e` background, `#38bdf8` primary, name + title + availability badge + stack chips + portrait
-- [x] Add `metadataBase` to `app/layout.tsx` so OG/Twitter URLs resolve absolute
-- [x] Add `twitter` card metadata (`summary_large_image`)
-- [x] Verify generated PNG lands in `out/opengraph-image.png` and tags render in built HTML
+### 1. Fix `pnpm lint` and finish the Next 16 migration
+- [ ] Replace `"lint": "next lint"` with `"lint": "eslint ."` and add a flat `eslint.config.mjs`
+      (`eslint-config-next` still ships the shareable config; there is no config file or `eslint`
+      binary in the project today)
+- [ ] Commit the `tsconfig.json` and `next-env.d.ts` edits the Next 16 build makes
+      (`jsx: preserve` → `react-jsx`, plus a `.next/dev/types` include)
 
-**Why:** `app/layout.tsx` set `openGraph` title/description but no `images`, and had no `twitter` block at all. Every link pasted into LinkedIn, Slack, or an email rendered as a bare text stub.
+**Why:** Next 16 removed `next lint`. On master today the script fails outright:
+`Invalid project directory provided, no such directory: ./lint`. `pnpm build` is unaffected,
+so this has been invisible — `node_modules` was still pinned at 15.5.25 locally.
 
-**Notes for future edits:**
-- Uses a *route* (`app/opengraph-image.png/route.tsx`), not the `opengraph-image` file convention. The convention emits an **extensionless** file (`out/opengraph-image`), which GitHub Pages serves as `application/octet-stream` — social scrapers reject that. The route form exports to a real `.png` path.
-- `export const dynamic = "force-static"` is required under `output: 'export'`.
-- Fonts are read from `assets/fonts/*.ttf` at build time rather than fetched from Google, so the build has no network dependency. These are build-only and never shipped to the browser.
-- The portrait is `assets/og-portrait.jpg` (460x460, ~90KB), inlined as a data URI. It is a separate build-time crop from the full-resolution portrait, which task 2 moved to `assets/raymond-original.jpg`.
-- Satori does **not** tile background gradients, so the site's dot-grid texture is intentionally omitted from the card — it would render as flat color. Glow blobs use `radial-gradient` because satori also ignores `filter: blur()`.
+### 2. Gate deploys on lint + typecheck
+- [ ] Add `pnpm lint` and `tsc --noEmit` steps to `.github/workflows/nextjs.yml`
+- [ ] Consider splitting them into a `check` job that also runs on PRs, not just on push to master
 
-### 2. Optimize the hero photo — DONE
-- [x] Resize `public/raymond.jpg` (was 1390x1723, 862KB) down to 600x744
-- [x] Convert to WebP/AVIF with a JPG fallback, served via `<picture>`
-- [x] Add explicit `width`/`height` to the `<img>` in `components/hero.tsx` to kill layout shift
-- [x] Add `fetchPriority="high"` — it's the LCP element
+**Why:** CI runs `pnpm install` and `pnpm build` only. Nothing catches a type or lint error before
+it deploys. Depends on task 1 — there is no working lint command to call yet.
 
-**Why:** One file is ~37% of the 2.3MB build, served unoptimized (`images.unoptimized: true`) and displayed at 288px. Expect ~40-60KB after.
+## Pass 2 — Performance
 
-**Result:** 862KB -> 42KB on the wire (AVIF, which is what Chrome, Firefox, and Safari 16+ actually fetch). Fallbacks: WebP 66KB, JPG 67KB.
+### 3. Cut the font payload
+- [ ] Drop `JetBrains_Mono` from `next/font/google` in favor of the system mono stack already
+      declared as a fallback in `globals.css:57` (`ui-monospace, SFMono-Regular, monospace`)
+- [ ] Re-measure preloaded font bytes afterward
 
-**Notes for future edits:**
-- The 1390x1723 master moved to `assets/raymond-original.jpg`. It is the source for regenerating the three `public/raymond.*` files and is **not** shipped to the browser. Task 4's repo cleanup must keep it, alongside `assets/fonts/` and `assets/og-portrait.jpg`.
-- `public/raymond.jpg` keeps its original path so the URL stays stable; only its contents changed.
-- Encoder settings, all off a `sharp(...).rotate().resize({ width: 600 })` base: JPG `quality: 72, mozjpeg: true, progressive: true`; WebP `quality: 72, effort: 6, smartSubsample: true`; AVIF `quality: 50, effort: 6`. Visually indistinguishable from q80 at the 288px render size.
-- `sharp` is intentionally **not** a project dependency — these are pre-generated build *inputs*, not build outputs. Install it ad hoc to regenerate.
-- Aspect ratio is preserved rather than pre-cropped square, so `object-[center_15%]` still controls the framing. Changing one without the other shifts the crop.
-- React emits `srcSet` and `fetchPriority` into the static HTML with their camelCase spelling. That is fine — HTML attribute names are case-insensitive. Verified in Chrome that only `raymond.avif` is fetched and `fetchpriority` reads back as `high`.
+**Why:** The build emits 13 woff2 files (305KB on disk), of which 2 are preloaded — ~88KB on the
+wire. Mono is used in exactly seven places, all incidental chrome: date ranges in the timeline,
+tech chips on project cards, and the `kbd` hints in the header and command palette. That is a lot
+of bytes for text nobody reads as a typeface. If the look is worth keeping, the fallback is to
+subset it to the ~40 glyphs actually rendered rather than shipping the full latin range.
 
-### 3. Structured data + crawler files
-- [ ] Add JSON-LD `Person` schema to `app/layout.tsx` (jobTitle, worksFor, `sameAs` GitHub/LinkedIn, `knowsAbout` skills, address Austin TX)
-- [ ] Add `app/sitemap.ts`
-- [ ] Add `app/robots.ts`
+### 4. Investigate the JS bundle
+- [ ] Measure what is in the three large chunks (256KB / 192KB / 128KB raw)
+- [ ] Confirm `lucide-react` is tree-shaking to just the imported icons
+- [ ] Check whether `command-palette.tsx` (459 lines, the largest component) can be deferred until
+      first `⌘K` rather than shipped in the initial chunk
 
-**Why:** JSON-LD is how Google builds a knowledge panel for a name search. All the data is already hardcoded in the components.
+**Why:** 611KB raw / 185KB gzipped of JS for a static single-page site with no data fetching and
+no routing. Some of that is unavoidable React, but the ratio is worth a look. This is scoped as an
+investigation, not a fix — the fix depends on what the measurement shows.
 
-### 4. Repo cleanup — DONE
-- [x] `git rm -r` the pre-Next Bootstrap template leftovers: `css/`, `js/`, `fonts/`, `images/`, `scss/`, `prepros-6.config`
-- [x] Remove the two obsolete resumes `assets/RaymondResume.pdf` and `assets/Resume2019.pdf` — but KEEP `assets/fonts/` and `assets/og-portrait.jpg`, which task 1 uses at build time
-- [x] Remove the 12 tracked `.DS_Store` files (`.gitignore` already listed `.DS_Store`; they predated it)
+## Pass 3 — Missing surfaces
 
-**Why:** ~178 of ~190 tracked files are dead weight unreferenced by any component. Anyone clicking through to the repo from the portfolio sees a template graveyard.
+### 5. Custom 404 page
+- [ ] Add `app/not-found.tsx` matching the site's palette, with a link back to `/`
 
-**Notes for future edits:**
-- 182 files removed; 29 remain tracked. Verified with `pnpm build`: same six routes, and `out/opengraph-image.png` still renders at 1200x630.
-- Also dropped two now-dead `.gitignore` entries for deleted template files: `prepos-6.config` (itself a typo — the real file was `prepros-6.config`, so it was never actually ignored) and `single.html`.
+**Why:** `out/404.html` is currently Next's unstyled default. GitHub Pages serves it for every bad
+path under the domain, so it is a real page a visitor can land on — and right now it looks like a
+different site.
 
-## Pass 2 — Make it feel alive
+### 6. Print stylesheet
+- [ ] Add an `@media print` block to `globals.css`: hide the fixed header, progress bar, command
+      palette, theme toggle, and decorative glow blobs; force the light palette; expand link hrefs
 
-### 5. Scroll-spy nav + progress bar — DONE
-- [x] `IntersectionObserver` to highlight the active section in `components/header.tsx`
-- [x] Thin scroll-progress bar under the fixed header
+**Why:** This is a resume site. Cmd+P is a thing people do to it, and the fixed header plus a dark
+background makes the current output unusable. There are no print styles at all today.
 
-**Why:** Five anchors with no active state — nothing tells you where you are on a long single page.
+### 7. Skip-to-content link
+- [ ] Add a visually-hidden-until-focused skip link as the first focusable element in `layout.tsx`
 
-**Notes for future edits:**
-- The observer uses `rootMargin: "-80px 0px -55% 0px"` — a band starting just below the fixed header. The callback keeps a `Set` of ids currently in the band and picks the first one in `navItems` order, so overlapping sections resolve top-down.
-- `education` has no nav entry (task 10 later gave it an `id` for the command palette, but scroll-spy only observes ids drawn from `navItems`). When it fills the band nothing intersects, the callback finds no candidate, and the previous section stays highlighted — that is intentional, not a bug.
-- The progress bar is JS (rAF-throttled scroll listener driving `scaleX`) rather than CSS `animation-timeline: scroll()`, so it works in browsers without scroll-driven animation support.
-- Active state is exposed as `aria-current`, with the underline (desktop) and dot (mobile) as `aria-hidden` decoration.
+**Why:** Keyboard and screen-reader users currently tab through the entire header — nav, theme
+toggle, ⌘K trigger, resume button — before reaching content, on every visit. The rest of the site
+is unusually careful about a11y (roles, `aria-current`, focus trapping in the palette), so this is
+a conspicuous gap.
 
-### 6. Wire up scroll reveal — DONE
-- [x] Use the already-defined `.animate-fade-up` on section entry — it was defined and used nowhere
-- [x] Prefer CSS scroll-driven animations (`animation-timeline: view()`) with graceful degradation
-
-**Notes for future edits:**
-- One class, two behaviors. `.animate-fade-up` on its own is a plain 0.5s load-time animation; inside `@supports (animation-timeline: view()) and (animation-duration: auto)` it is re-pointed at a view timeline (`animation-range: entry 15% entry 65%`). Chrome/Edge get the scroll-driven reveal; Safari and Firefox still get the fade, just on load. No JS, no `IntersectionObserver`.
-- The `and (animation-duration: auto)` half of the `@supports` test is load-bearing: the scroll-driven rule relies on `animation-duration: auto` to stretch the animation across the range, so a browser that ships `view()` without `auto` must fall back rather than get a 0.5s animation on a progress timeline.
-- **`overflow-hidden` breaks `view()`.** It makes the element a scroll container, so descendants resolve their view timeline against *it* instead of the document; the timeline is inactive and the animation silently never runs. The Skills and Contact sections use `overflow-clip` instead — same clipping of the glow blobs, no scroll container. Do not switch them back, and do not add `overflow-hidden` to an ancestor of a revealed element.
-- The hero is deliberately left out. It is above the fold and holds the LCP element; fading it from `opacity: 0` on load would delay LCP for no benefit.
-- `prefers-reduced-motion: reduce` disables the animation entirely (see task 7 for the rest of the motion guards).
-
-### 7. Respect `prefers-reduced-motion` — DONE
-- [x] Guard `html { scroll-behavior: smooth }`
-- [x] Guard the two infinite `animate-pulse-dot` instances
-
-**Why:** Currently unhandled, and it is the kind of detail another engineer notices.
-
-**Notes for future edits:**
-- One `@media (prefers-reduced-motion: reduce)` block in `app/globals.css`, right under the `html` rule it overrides.
-- It resets `scroll-behavior` to `auto` and collapses every animation and transition to `0.01ms` with `animation-iteration-count: 1`. Near-zero rather than `none` so animations still *finish*: elements land on their final keyframe instead of being stuck at the initial one. That matters for `.animate-fade-up` (starts at `opacity: 0`), which task 6 will start using — it inherits the guard for free.
-- The `!important` is required to beat Tailwind utilities like `transition-all duration-300`.
-- No JS depends on `transitionend`/`animationend`, so collapsing durations cannot strand any UI. The mobile menu in `components/header.tsx` is a pure class toggle and simply snaps open.
-
-## Pass 3 — Content & extras
+## Pass 4 — Content & polish
 
 ### 8. Metrics strip in the hero
-- [ ] Surface three numbers from the Caesars bullets as stat tiles (+137% organic clicks, Lighthouse 65 -> 99, 0ms TBT)
+- [ ] Surface three numbers from the Caesars bullets as stat tiles: +137% organic clicks,
+      Lighthouse 65 → 99, 0ms TBT
 
-**Why:** The strongest quantitative proof on the site is buried in paragraph six of `components/experience.tsx`.
+**Why:** The strongest quantitative proof on the site is buried mid-sentence in a bullet at
+`components/experience.tsx:22`. Carried over from the previous backlog — still the highest-value
+change to what a visitor actually sees.
 
-### 9. BirdieLab case-study depth — DONE
-- [x] Add three phone-frame screenshots to `components/projects.tsx` (scorecard, GPS, round summary)
-- [x] Serve them AVIF/WebP/JPG via `<picture>` with explicit `width`/`height`, like task 2's hero photo
-- [x] Split the project card into two columns at `lg` so the phones sit beside the writeup
+### 9. Reconcile the job title
+- [ ] Pick one of "Senior Software Engineer" and "Senior Full-Stack Engineer" and use it everywhere
 
-**Why:** One project, strong writeup, zero visuals.
+**Why:** The hero (`hero.tsx:48`) and the OG card alt text say "Senior Full-Stack Engineer"; the
+page title, the JSON-LD `jobTitle`, and `CLAUDE.md` say "Senior Software Engineer". Structured data
+disagreeing with the visible h1 is exactly what a search crawler notices.
 
-**Result:** ~43KB on the wire for all three (AVIF), lazy-loaded below the fold.
+### 10. Stop churning `sitemap.lastModified`
+- [ ] Replace `lastModified: new Date()` in `app/sitemap.ts` with a real content date
 
-**Notes for future edits:**
-- Sources are the three marketing screenshots from `birdielab.app` (1242x2688). The masters live in `assets/birdielab/*-original.webp` and are **not** shipped to the browser — same arrangement as `assets/raymond-original.jpg`.
-- Shipped files are `public/birdielab-{scorecard,gps,round-summary}.{avif,webp,jpg}` at 400x866. Encoder settings off a `sharp(...).resize({ width: 400 })` base: JPG `quality: 78, mozjpeg: true, progressive: true`; WebP `quality: 78, effort: 6, smartSubsample: true`; AVIF `quality: 60, effort: 6`. Higher than the hero photo's settings because these are UI screenshots with small text, and the sources are already once-lossy WebP.
-- `Project.screenshots` is optional and each entry's `src` is a path *stem* — the three extensions are appended in the markup. Adding a second project without screenshots needs no changes.
-- The card carries `min-w-0`. Without it the card is a grid item with the default `min-width: auto`, so the screenshot row's 530px of content stretched the card past the viewport and gave the whole page a horizontal scrollbar on mobile. Verified at 386px: `documentElement.scrollWidth === body.clientWidth`.
-- Below `sm` the row is a snap-scrolling flex strip that bleeds to the card edges (`-mx-6 px-6`), with the scrollbar hidden via `[scrollbar-width:none]` / `[&::-webkit-scrollbar]:hidden` — the site's global `::-webkit-scrollbar` rule only sets `width`, so a horizontal bar would have rendered at the browser default height. At `sm` and up it becomes a three-column grid.
-- On mobile the tech chips come before the screenshots; at `lg` the chips end the left column and the phones fill the right. That order swap is a consequence of the two-column split, not an oversight.
+**Why:** Every build stamps "modified now" on the only URL in the sitemap, whether or not anything
+changed. It trains crawlers to ignore the signal.
 
-### 10. Command palette (Cmd+K) — DONE
-- [x] `components/command-palette.tsx` — ⌘K / Ctrl+K anywhere, plus a `⌘K` trigger button in the desktop header
-- [x] Fuzzy-jump to the six sections; copy email, send an email, download resume, open GitHub/LinkedIn
-- [x] Hand-rolled fuzzy matcher with match highlighting — no new dependency
-- [x] Full keyboard model (↑↓ / Home / End / ↵ / esc), `combobox` + `listbox` roles, focus trap and restore, `aria-live` toast for the copy result
+### 11. Delete the commented-out availability badge
+- [ ] Remove the dead JSX block at `components/hero.tsx:36-41`, or bring it back
 
-**Notes for future edits:**
-- Commands live in one `buildCommands()` array in the component. `keywords` are extra match terms that never render (so "cv" finds the resume, "utrgv" finds Education); they rank below label matches and do not light up the label.
-- The header is a client component but `app/page.tsx` is a server component, so the trigger button dispatches a `command-palette:open` window event (exported as `OPEN_EVENT`) rather than palette state being lifted into the page.
-- Task 5 deliberately left `education` without an `id`; the palette needs one to jump there, so it now has `id="education"`. This does **not** affect scroll-spy, which only observes ids drawn from `navItems`.
-- The scroll lock (`body { overflow: hidden }`) is set and cleared through `setPageLocked()`, and `close()` clears it **synchronously**. React does not commit the close — and so does not run the effect cleanup — until after the event handler returns, which is *after* `command.run()` has already fired; a still-locked body silently swallows the jump. This was a real bug caught in the browser, not a hypothetical.
-- Focus restoration uses `focus({ preventScroll: true })` for the same reason: the cleanup runs after a smooth scroll has started, and a scrolling `focus()` cancels it and snaps back to the top.
-- `html { scrollbar-gutter: stable }` was added to `globals.css` so locking the body does not shift the page under the overlay.
-- The ⌘/Ctrl label renders as `⌘K` on the server and is corrected after mount from `navigator.userAgent`, which keeps the static export free of hydration mismatches.
-- No scroll-lock or focus behavior depends on `transitionend`/`animationend`, so task 7's reduced-motion guard (which collapses durations to 0.01ms) cannot strand the palette.
-- Verified in Chrome: open/close, fuzzy typo tolerance ("cpye" → Copy email address), arrow navigation, jump-to-section, clipboard copy + toast, clean console with no hydration warnings.
-
-### 11. Light mode — DONE
-- [x] Move the palette out of `@theme inline` into plain `:root` custom properties, with a `:root[data-theme="light"]` override
-- [x] Sun/moon toggle in the header (desktop, and outside the collapsible menu on mobile)
-- [x] Persist the choice in `localStorage`, restored before first paint by an inline script in `app/layout.tsx`
-
-**Notes for future edits:**
-- The `@theme inline` block no longer holds color literals — it maps `--color-*` to `var(--background)` and friends. That indirection is the whole trick: with `inline`, Tailwind emits the *value* of a theme token into each utility, so a palette declared directly in `@theme` bakes `#0a0f1e` into `.bg-background` and can never be swapped at runtime. Pointing the tokens at plain custom properties makes the utility compile to `background-color: var(--background)` instead. Verified in the built CSS.
-- **Dark stays the default** for a first-time visitor regardless of their OS setting — the site is dark-first and the OG card matches. To follow `prefers-color-scheme` instead, wrap the light tokens in a `@media (prefers-color-scheme: light)` block scoped to `:root:not([data-theme="dark"])` and add a matching `:root[data-theme="dark"]` block so the toggle still wins both ways.
-- Light `--primary` is sky-600 / `--accent` is cyan-600, not the dark theme's 400-weights — those wash out against a near-white background.
-- The three decorative classes at the bottom of `globals.css` (`gradient-text`, `dot-grid`, `glow-primary`) paint with raw colors rather than Tailwind tokens, so each got its own variable. Any new decorative CSS that hardcodes a color needs the same treatment; the section components need none, since they were already using semantic tokens exclusively.
-- `color-scheme` is set per theme so form controls, the scrollbar, and the browser's own chrome follow along. The `theme-color` meta is static in `viewport` (the dark default) and rewritten by the toggle at runtime — it cannot be expressed declaratively since the theme is not tied to a media query.
-- `<html>` needs `suppressHydrationWarning`: the restore script mutates `data-theme` before React hydrates. The toggle reads the attribute back on mount rather than re-deriving it, so the icon always matches what is on screen.
-
-### 12. Fix the `lint` script before Next 16 lands
-- [ ] `package.json` has `"lint": "next lint"`. This still works on Next 15, but `next lint` was removed in Next 16 — on the `chore/next-16-upgrade` branch it errors with `Invalid project directory provided, no such directory: ./lint`
-- [ ] Migrate to the ESLint CLI (`eslint .`) with a flat config
-
-**Why:** Surfaced while verifying the OG build against Next 16. Not a problem on `master` today; it becomes one the moment the Next 16 upgrade merges.
+**Why:** Six lines of commented-out markup for an "Open to new opportunities" badge. Git remembers
+it; the file does not need to.
