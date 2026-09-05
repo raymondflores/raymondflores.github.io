@@ -2,121 +2,123 @@
 
 Ranked by payoff-per-effort, grouped so related work lands together.
 
-Measurements below are from a `pnpm build` on Next 16.3.4 at commit `e7d2072`.
+Verified against a `pnpm build` on Next 16.3.4 at commit `4faec78` (post-#34).
+Items marked *(carried)* were open in the previous backlog and are unchanged.
 
-## Pass 1 — Unbreak the toolchain
+## Pass 1 — Repo presentation
 
-### 1. Fix `pnpm lint` and finish the Next 16 migration — done
-- [x] Replace `"lint": "next lint"` with `"lint": "eslint ."` and add a flat `eslint.config.mjs`
-      built on `eslint-config-next/core-web-vitals` + `/typescript`, with `eslint` and
-      `eslint-config-next` added as devDependencies
-- [x] Commit the `tsconfig.json` and `next-env.d.ts` edits the Next 16 build makes
-      (`jsx: preserve` → `react-jsx`, plus a `.next/dev/types` include)
+The portfolio links to the repo. Right now the repo undersells the site.
 
-**Why:** Next 16 removed `next lint`. On master today the script fails outright:
-`Invalid project directory provided, no such directory: ./lint`. `pnpm build` is unaffected,
-so this has been invisible — `node_modules` was still pinned at 15.5.25 locally.
+### 1. Write a README
+- [ ] What the site is, and a link to the live URL
+- [ ] Stack, `pnpm dev` / `build` / `lint` / `typecheck`, and how deploys work
+- [ ] A short "where things live" section pointing at `CLAUDE.md` for the detail
+- [ ] Note that content is hardcoded in components, so contributors know there is no CMS
 
-**Left behind:** `react-hooks/set-state-in-effect` is set to `warn` rather than `error`. It flags
-four deliberate hydration-safe effects — see task 2a.
+**Why:** There has never been a README — not one commit in the repo's history has touched a
+`README*` file. Anyone who clicks through from the portfolio to the GitHub repo lands on a bare
+file listing. For a site whose whole job is to demonstrate craft, that is the weakest link in the
+funnel.
 
-### 2. Gate deploys on lint + typecheck — done
-- [x] Add `pnpm lint` and `tsc --noEmit` steps to `.github/workflows/nextjs.yml`
-- [ ] Consider splitting them into a `check` job that also runs on PRs, not just on push to master
+### 2. Fix the repo's own metadata
+- [ ] Homepage URL points at `https://raymondflores-github-io.vercel.app` — a Vercel deploy, not
+      the GitHub Pages site this repo actually ships to
+- [ ] Description is the single word "Portfolio"
+- [ ] No topics set (`nextjs`, `typescript`, `tailwindcss`, `portfolio`, `github-pages`)
 
-**Why:** CI runs `pnpm install` and `pnpm build` only. Nothing catches a type or lint error before
-it deploys. Depends on task 1 — there is no working lint command to call yet.
+**Why:** The homepage link is the button GitHub renders at the top right of the repo page, and it
+currently sends visitors to the wrong domain. Free to fix, and it is the first thing a recruiter
+clicking the repo sees.
 
-**Also changed:** CI was on `pnpm/action-setup@v2` pinned to pnpm 8 against a `lockfileVersion: 9.0`
-lockfile. Now `packageManager: pnpm@11.25.0` in `package.json` drives `action-setup@v4`, and Node
-moved 20 → 22 because pnpm 11 requires `>=22.13`. A `pnpm-workspace.yaml` approves the
-`unrs-resolver` postinstall; without it pnpm 10+ exits non-zero from the deps check and every
-`pnpm <script>` fails before the script runs.
+## Pass 2 — Correctness & staleness
 
-### 2a. Promote `react-hooks/set-state-in-effect` back to an error
-- [ ] `components/theme-toggle.tsx:34` — reads `data-theme` off `<html>` after mount
-- [ ] `components/header.tsx:57` — platform sniff for the ⌘K vs Ctrl K label
-- [ ] `components/command-palette.tsx:233` — resets query/index on open
-- [ ] `components/command-palette.tsx:258` — resets index on every query change
+### 3. Footer copyright year is frozen at build time
+- [ ] `components/footer.tsx` computes `new Date().getFullYear()` in a server component, so the
+      year is baked into the static export
 
-**Why:** All four are correct today — setting state in an effect is what keeps the server render and
-the client render identical through hydration. But `eslint-plugin-react-hooks` v7 flags the pattern,
-and the idiomatic replacements (`useSyncExternalStore` for the first two, moving the reset into the
-open/change handler for the last two) are cheaper to reason about. Scoped separately from task 1
-because it edits hydration-sensitive UI, not the toolchain.
+**Why:** Verified in the build output — `out/index.html` literally contains `© 2026 Raymond
+Flores`. Deploys only happen on push to master, so on 1 January the site shows the previous year
+until the next unrelated commit. Same class of bug as the sitemap `lastModified` churn fixed in
+#32, just in the other direction. Either render it client-side or drop the year entirely.
 
-## Pass 2 — Performance
-
-### 3. Cut the font payload
-- [ ] Drop `JetBrains_Mono` from `next/font/google` in favor of the system mono stack already
-      declared as a fallback in `globals.css:57` (`ui-monospace, SFMono-Regular, monospace`)
-- [ ] Re-measure preloaded font bytes afterward
-
-**Why:** The build emits 13 woff2 files (305KB on disk), of which 2 are preloaded — ~88KB on the
-wire. Mono is used in exactly seven places, all incidental chrome: date ranges in the timeline,
-tech chips on project cards, and the `kbd` hints in the header and command palette. That is a lot
-of bytes for text nobody reads as a typeface. If the look is worth keeping, the fallback is to
-subset it to the ~40 glyphs actually rendered rather than shipping the full latin range.
-
-### 4. Investigate the JS bundle
-- [ ] Measure what is in the three large chunks (256KB / 192KB / 128KB raw)
-- [ ] Confirm `lucide-react` is tree-shaking to just the imported icons
-- [ ] Check whether `command-palette.tsx` (459 lines, the largest component) can be deferred until
-      first `⌘K` rather than shipped in the initial chunk
-
-**Why:** 611KB raw / 185KB gzipped of JS for a static single-page site with no data fetching and
-no routing. Some of that is unavoidable React, but the ratio is worth a look. This is scoped as an
-investigation, not a fix — the fix depends on what the measurement shows.
-
-## Pass 3 — Missing surfaces
-
-### 5. Custom 404 page
-- [x] Add `app/not-found.tsx` matching the site's palette, with a link back to `/`
-
-**Why:** `out/404.html` is currently Next's unstyled default. GitHub Pages serves it for every bad
-path under the domain, so it is a real page a visitor can land on — and right now it looks like a
-different site.
-
-### 6. Print stylesheet
-- [x] Add an `@media print` block to `globals.css`: hide the fixed header, progress bar, command
-      palette, theme toggle, and decorative glow blobs; force the light palette; expand link hrefs
-
-**Why:** This is a resume site. Cmd+P is a thing people do to it, and the fixed header plus a dark
-background makes the current output unusable. There are no print styles at all today.
-
-### 7. Skip-to-content link
-- [x] Add a visually-hidden-until-focused skip link as the first focusable element in `layout.tsx`
-
-**Why:** Keyboard and screen-reader users currently tab through the entire header — nav, theme
-toggle, ⌘K trigger, resume button — before reaching content, on every visit. The rest of the site
-is unusually careful about a11y (roles, `aria-current`, focus trapping in the palette), so this is
-a conspicuous gap.
-
-## Pass 4 — Content & polish
-
-### 8. Metrics strip in the hero
-- [ ] Surface three numbers from the Caesars bullets as stat tiles: +137% organic clicks,
-      Lighthouse 65 → 99, 0ms TBT
-
-**Why:** The strongest quantitative proof on the site is buried mid-sentence in a bullet at
-`components/experience.tsx:22`. Carried over from the previous backlog — still the highest-value
-change to what a visitor actually sees.
-
-### 9. Reconcile the job title
+### 4. Reconcile the job title *(carried)*
 - [ ] Pick one of "Senior Software Engineer" and "Senior Full-Stack Engineer" and use it everywhere
 
-**Why:** The hero (`hero.tsx:48`) and the OG card alt text say "Senior Full-Stack Engineer"; the
-page title, the JSON-LD `jobTitle`, and `CLAUDE.md` say "Senior Software Engineer". Structured data
-disagreeing with the visible h1 is exactly what a search crawler notices.
+**Why:** It splits 3-to-9. "Senior Full-Stack Engineer" appears in the hero h1
+(`hero.tsx:49`), the OG card (`opengraph-image.png/route.tsx:141`), and the OG image alt
+(`layout.tsx:110`). "Senior Software Engineer" appears everywhere else, including the page title,
+the JSON-LD `jobTitle` (`layout.tsx:32`), the hero's own status card (`hero.tsx:135`), and every
+entry in `experience.tsx`. Structured data disagreeing with the visible h1 is exactly what a search
+crawler notices.
 
-### 10. Stop churning `sitemap.lastModified`
-- [x] Replace `lastModified: new Date()` in `app/sitemap.ts` with a real content date
-
-**Why:** Every build stamps "modified now" on the only URL in the sitemap, whether or not anything
-changed. It trains crawlers to ignore the signal.
-
-### 11. Delete the commented-out availability badge
-- [ ] Remove the dead JSX block at `components/hero.tsx:36-41`, or bring it back
+### 5. Delete the commented-out availability badge *(carried)*
+- [ ] Remove the dead JSX at `components/hero.tsx:36-41`, or bring it back
 
 **Why:** Six lines of commented-out markup for an "Open to new opportunities" badge. Git remembers
-it; the file does not need to.
+it; the file does not need to. Line numbers re-verified post-#34.
+
+### 6. Promote `react-hooks/set-state-in-effect` back to an error *(carried, was 2a)*
+- [ ] Fix the 4 warnings, then raise the rule to `error` so CI fails on regressions
+
+**Why:** `pnpm lint` reports 4 problems, 0 errors, 4 warnings — all this rule, in
+`command-palette.tsx` (x2), `header.tsx`, and `theme-toggle.tsx`. They are warnings so CI passes,
+which means they will quietly accumulate. This is the first code in the project ever to be linted.
+
+## Pass 3 — Performance *(both carried)*
+
+### 7. Cut the font payload
+- [ ] Drop `JetBrains_Mono` in favor of the system mono stack already declared as a fallback in
+      `globals.css`, or subset it to the glyphs actually rendered
+
+**Why:** 13 woff2 files on disk, 2 preloaded (~88KB on the wire). Mono is used in seven incidental
+places — timeline dates, tech chips, and `kbd` hints. A lot of bytes for text nobody reads as a
+typeface.
+
+### 8. Investigate the JS bundle
+- [ ] Measure what is in the large chunks; confirm `lucide-react` tree-shakes
+- [ ] Check whether `command-palette.tsx` can be deferred until first `⌘K`
+
+**Why:** 188KB gzipped of JS for a static one-pager with no data fetching and no routing. CSS is
+only 8KB gzipped by comparison. Scoped as an investigation — the fix depends on the measurement.
+
+## Pass 4 — Infrastructure
+
+### 9. Add a Dependabot config
+- [ ] `.github/dependabot.yml` for the npm ecosystem, grouped minor/patch updates, monthly
+
+**Why:** No `.github/dependabot.yml` has ever existed in this repo. PR #25 was a Dependabot
+*security* update, which GitHub runs without config — but version updates need the file, so
+ordinary dependency drift goes unnoticed. The Next 15 → 16 upgrade had to be done by hand.
+
+### 10. Add a smoke test to CI
+- [ ] There are zero test files in the repo
+- [ ] Start narrow: build the site, then assert on the static output — `out/index.html` contains
+      the h1 and the JSON-LD block, `out/404.html` is the styled page, `out/sitemap.xml` and
+      `out/opengraph-image.png` exist and the PNG is 1200x630
+- [ ] Optionally add an axe-core pass over the built HTML for a11y regressions
+
+**Why:** CI now gates on lint and typecheck, but nothing verifies the site actually renders. Every
+past regression in this repo — the extensionless OG image, the mobile horizontal scrollbar, the
+swallowed palette jump — was a build-output or runtime problem that lint and `tsc` cannot see.
+
+## Pass 5 — Content
+
+### 11. Add analytics
+- [ ] A privacy-respecting, cookie-free option (Plausible, Umami, GoatCounter) — no consent banner
+      needed, and it stays consistent with the site's no-tracking feel
+
+**Why:** There is no instrumentation of any kind. There is no way to know whether the OG card is
+getting clicks, whether anyone downloads the resume, or whether the ⌘K palette is ever opened.
+Every optimization in this backlog is currently being made blind.
+
+### 12. Second project in the Projects section
+- [ ] The section is titled "Projects" and `projects.tsx` has exactly one entry (BirdieLab)
+
+**Why:** A plural heading over a single card reads as an unfinished section rather than a curated
+one. Either add a second project or retitle it.
+
+### 13. Add dates to Education
+- [ ] `components/education.tsx` lists the degree, school, and city, but no graduation year
+
+**Why:** Every other timeline entry on the site is dated. It is also a field the JSON-LD
+`alumniOf` block could carry.
