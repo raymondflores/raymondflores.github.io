@@ -10,10 +10,10 @@ Items marked *(carried)* were open in the previous backlog and are unchanged.
 The portfolio links to the repo. Right now the repo undersells the site.
 
 ### 1. Write a README
-- [ ] What the site is, and a link to the live URL
-- [ ] Stack, `pnpm dev` / `build` / `lint` / `typecheck`, and how deploys work
-- [ ] A short "where things live" section pointing at `CLAUDE.md` for the detail
-- [ ] Note that content is hardcoded in components, so contributors know there is no CMS
+- [x] What the site is, and a link to the live URL
+- [x] Stack, `pnpm dev` / `build` / `lint` / `typecheck`, and how deploys work
+- [x] A short "where things live" section pointing at `CLAUDE.md` for the detail
+- [x] Note that content is hardcoded in components, so contributors know there is no CMS
 
 **Why:** There has never been a README — not one commit in the repo's history has touched a
 `README*` file. Anyone who clicks through from the portfolio to the GitHub repo lands on a bare
@@ -21,10 +21,10 @@ file listing. For a site whose whole job is to demonstrate craft, that is the we
 funnel.
 
 ### 2. Fix the repo's own metadata
-- [ ] Homepage URL points at `https://raymondflores-github-io.vercel.app` — a Vercel deploy, not
+- [x] Homepage URL points at `https://raymondflores-github-io.vercel.app` — a Vercel deploy, not
       the GitHub Pages site this repo actually ships to
-- [ ] Description is the single word "Portfolio"
-- [ ] No topics set (`nextjs`, `typescript`, `tailwindcss`, `portfolio`, `github-pages`)
+- [x] Description is the single word "Portfolio"
+- [x] No topics set (`nextjs`, `typescript`, `tailwindcss`, `portfolio`, `github-pages`)
 
 **Why:** The homepage link is the button GitHub renders at the top right of the repo page, and it
 currently sends visitors to the wrong domain. Free to fix, and it is the first thing a recruiter
