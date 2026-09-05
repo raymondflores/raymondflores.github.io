@@ -73,10 +73,10 @@ export function GET() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", width: 660 }}>
-            {/* Location badge. Deliberately NOT the hero's "Open to new
-                opportunities" pill — that badge is commented out in
-                components/hero.tsx, and the share card should not advertise
-                what the site itself suppresses. */}
+            {/* Location badge. Deliberately NOT an "Open to new
+                opportunities" pill — the hero carries no such badge, and the
+                share card should not advertise what the site itself does
+                not. */}
             <div
               style={{
                 display: "flex",
@@ -138,7 +138,7 @@ export function GET() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                Senior Full-Stack Engineer
+                Senior Software Engineer
               </div>
             </div>
 

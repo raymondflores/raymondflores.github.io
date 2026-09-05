@@ -42,7 +42,7 @@ until the next unrelated commit. Same class of bug as the sitemap `lastModified`
 #32, just in the other direction. Either render it client-side or drop the year entirely.
 
 ### 4. Reconcile the job title *(carried)*
-- [ ] Pick one of "Senior Software Engineer" and "Senior Full-Stack Engineer" and use it everywhere
+- [x] Pick one of "Senior Software Engineer" and "Senior Full-Stack Engineer" and use it everywhere
 
 **Why:** It splits 3-to-9. "Senior Full-Stack Engineer" appears in the hero h1
 (`hero.tsx:49`), the OG card (`opengraph-image.png/route.tsx:141`), and the OG image alt
@@ -52,7 +52,7 @@ entry in `experience.tsx`. Structured data disagreeing with the visible h1 is ex
 crawler notices.
 
 ### 5. Delete the commented-out availability badge *(carried)*
-- [ ] Remove the dead JSX at `components/hero.tsx:36-41`, or bring it back
+- [x] Remove the dead JSX at `components/hero.tsx:36-41`, or bring it back
 
 **Why:** Six lines of commented-out markup for an "Open to new opportunities" badge. Git remembers
 it; the file does not need to. Line numbers re-verified post-#34.

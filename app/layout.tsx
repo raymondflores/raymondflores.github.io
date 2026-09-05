@@ -107,7 +107,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: "Raymond Flores — Senior Full-Stack Engineer",
+        alt: "Raymond Flores — Senior Software Engineer",
         type: "image/png",
       },
     ],
