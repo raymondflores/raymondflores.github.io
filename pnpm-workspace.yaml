@@ -1,0 +1,5 @@
+# pnpm blocks dependency build scripts unless they are approved here.
+# unrs-resolver is the native resolver behind eslint-import-resolver-typescript;
+# its postinstall only links the prebuilt binary for the current platform.
+allowBuilds:
+  unrs-resolver: true
