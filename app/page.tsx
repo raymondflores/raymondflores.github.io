@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <Experience />
         <Projects />

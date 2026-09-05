@@ -71,21 +71,21 @@ investigation, not a fix — the fix depends on what the measurement shows.
 ## Pass 3 — Missing surfaces
 
 ### 5. Custom 404 page
-- [ ] Add `app/not-found.tsx` matching the site's palette, with a link back to `/`
+- [x] Add `app/not-found.tsx` matching the site's palette, with a link back to `/`
 
 **Why:** `out/404.html` is currently Next's unstyled default. GitHub Pages serves it for every bad
 path under the domain, so it is a real page a visitor can land on — and right now it looks like a
 different site.
 
 ### 6. Print stylesheet
-- [ ] Add an `@media print` block to `globals.css`: hide the fixed header, progress bar, command
+- [x] Add an `@media print` block to `globals.css`: hide the fixed header, progress bar, command
       palette, theme toggle, and decorative glow blobs; force the light palette; expand link hrefs
 
 **Why:** This is a resume site. Cmd+P is a thing people do to it, and the fixed header plus a dark
 background makes the current output unusable. There are no print styles at all today.
 
 ### 7. Skip-to-content link
-- [ ] Add a visually-hidden-until-focused skip link as the first focusable element in `layout.tsx`
+- [x] Add a visually-hidden-until-focused skip link as the first focusable element in `layout.tsx`
 
 **Why:** Keyboard and screen-reader users currently tab through the entire header — nav, theme
 toggle, ⌘K trigger, resume button — before reaching content, on every visit. The rest of the site

@@ -30,26 +30,47 @@
   --gradient-text: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 35%, #38bdf8 100%);
 }
 
+/* The light palette's source values, declared once so both the
+   `data-theme="light"` swap below and the print block at the bottom of this
+   file can map onto them without restating any literals. */
+:root {
+  --light-background: #f8fafc;
+  --light-foreground: #0f172a;
+  --light-muted: #64748b;
+  --light-muted-foreground: #475569;
+  --light-card: #ffffff;
+  --light-card-foreground: #0f172a;
+  --light-border: #dbe4ee;
+  /* sky-600 / cyan-600 rather than the dark theme's 400-weights — the lighter
+     shades fail contrast against a near-white background. */
+  --light-primary: #0284c7;
+  --light-primary-foreground: #f0f9ff;
+  --light-accent: #0891b2;
+  --light-accent-foreground: #ecfeff;
+
+  --light-dot-grid: #cdd8e5;
+  --light-glow-primary: rgba(2, 132, 199, 0.12);
+  --light-gradient-text: linear-gradient(135deg, #0f172a 0%, #1e293b 35%, #0284c7 100%);
+}
+
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --muted-foreground: #475569;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --border: #dbe4ee;
-  /* sky-600 / cyan-600 rather than the dark theme's 400-weights — the lighter
-     shades fail contrast against a near-white background. */
-  --primary: #0284c7;
-  --primary-foreground: #f0f9ff;
-  --accent: #0891b2;
-  --accent-foreground: #ecfeff;
+  --background: var(--light-background);
+  --foreground: var(--light-foreground);
+  --muted: var(--light-muted);
+  --muted-foreground: var(--light-muted-foreground);
+  --card: var(--light-card);
+  --card-foreground: var(--light-card-foreground);
+  --border: var(--light-border);
+  --primary: var(--light-primary);
+  --primary-foreground: var(--light-primary-foreground);
+  --accent: var(--light-accent);
+  --accent-foreground: var(--light-accent-foreground);
 
-  --dot-grid: #cdd8e5;
-  --glow-primary: rgba(2, 132, 199, 0.12);
-  --gradient-text: linear-gradient(135deg, #0f172a 0%, #1e293b 35%, #0284c7 100%);
+  --dot-grid: var(--light-dot-grid);
+  --glow-primary: var(--light-glow-primary);
+  --gradient-text: var(--light-gradient-text);
 }
 
 @theme inline {
@@ -177,4 +198,128 @@ body {
 
 .glow-primary {
   box-shadow: 0 0 24px var(--glow-primary);
+}
+
+/* Skip link — the first focusable element in the document (app/layout.tsx).
+   Parked off the top of the viewport rather than hidden, so it stays in the
+   accessibility tree, and slides in when it takes focus. Without it a keyboard
+   visitor tabs the whole header — nav, palette trigger, resume, toggle — before
+   reaching content, on every visit. */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  margin: 0.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+  background-color: var(--color-card);
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease-out;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* The skip link's landing point is focused programmatically, so suppress the
+   ring that would otherwise outline the entire page. */
+#main-content:focus {
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Print
+
+   This is a resume site, so Cmd+P is a real path through it. Screen chrome
+   (the fixed header and its progress bar, the command palette, the theme
+   toggle) and the decorative layers come off, and the palette is forced light
+   whatever the visitor has chosen — browsers drop background colors when
+   printing, so the dark palette would otherwise put pale text on white paper.
+   --------------------------------------------------------------------------- */
+@media print {
+  /* Both selectors, because the runtime light block above is more specific
+     than a bare `:root` and would otherwise still win over this one. */
+  :root,
+  :root[data-theme="light"] {
+    color-scheme: light;
+
+    --background: var(--light-background);
+    --foreground: var(--light-foreground);
+    --muted: var(--light-muted);
+    --muted-foreground: var(--light-muted-foreground);
+    --card: var(--light-card);
+    --card-foreground: var(--light-card-foreground);
+    --border: var(--light-border);
+    --primary: var(--light-primary);
+    --primary-foreground: var(--light-primary-foreground);
+    --accent: var(--light-accent);
+    --accent-foreground: var(--light-accent-foreground);
+
+    --dot-grid: var(--light-dot-grid);
+    --glow-primary: transparent;
+    --gradient-text: none;
+  }
+
+  /* Screen-only chrome and decoration. Applied in the components to the fixed
+     header (which carries the scroll progress bar), the command palette and
+     its toast, the theme toggle, and the dot grid and glow blobs. */
+  .no-print {
+    display: none !important;
+  }
+
+  /* The scroll-driven reveals never advance in a paged context, so anything
+     still at the start of `fade-up` would print blank. */
+  .animate-fade-up,
+  .animate-pulse-dot {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* The gradient headline is painted into transparent text, which prints as
+     nothing once the background is dropped. */
+  .gradient-text {
+    background: none;
+    -webkit-text-fill-color: var(--color-foreground);
+    color: var(--color-foreground);
+  }
+
+  .glow-primary {
+    box-shadow: none;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Backdrop filters have nothing meaningful to sample on paper and render as
+     a gray wash behind the cards that use them. */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+  }
+
+  /* The hero reserves a full viewport on screen; on paper that is a mostly
+     empty first sheet. */
+  section {
+    min-height: 0 !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  /* Destinations a reader cannot click. Relative hrefs (the resume PDF) are
+     left alone — the printed page is the resume. */
+  a[href^="http"]::after,
+  a[href^="mailto:"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    font-weight: 400;
+    color: var(--color-muted);
+    word-break: break-all;
+  }
 }
