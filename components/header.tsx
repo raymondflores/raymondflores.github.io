@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, Download, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { OPEN_EVENT } from "@/components/command-palette";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -19,6 +20,9 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(sectionIds[0]);
   const [scrollProgress, setScrollProgress] = useState(0);
+  // Rendered as the Mac shortcut on the server, corrected after mount so the
+  // static export hydrates without a mismatch.
+  const [shortcutLabel, setShortcutLabel] = useState("\u2318K");
 
   // Scroll-spy: a section is "active" once its top crosses the band just below
   // the fixed header. Sections without a nav entry (education) leave the band
@@ -47,6 +51,10 @@ export function Header() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!/Mac|iPhone|iPad/.test(navigator.userAgent)) setShortcutLabel("Ctrl K");
   }, []);
 
   useEffect(() => {
@@ -87,7 +95,7 @@ export function Header() {
             <span className="text-primary font-bold">R</span>aymond Flores
           </a>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             <ul className="flex items-center gap-6">
               {navItems.map((item) => {
                 const isActive = activeSection === item.href.slice(1);
@@ -117,6 +125,17 @@ export function Header() {
                 );
               })}
             </ul>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}
+              aria-label="Open command palette"
+              className="flex items-center gap-2 pl-2.5 pr-1.5 py-1.5 rounded-lg border border-border text-sm text-muted-foreground hover:border-primary/30 hover:text-foreground transition-all"
+            >
+              <Search size={14} />
+              <kbd className="font-mono text-xs text-muted border border-border rounded px-1.5 py-0.5">
+                {shortcutLabel}
+              </kbd>
+            </button>
             <a
               href="/Raymond_Flores_2026.pdf"
               download

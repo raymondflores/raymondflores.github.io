@@ -2,7 +2,7 @@ import { GraduationCap } from "lucide-react";
 
 export function Education() {
   return (
-    <section className="py-16">
+    <section id="education" className="py-16">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="animate-fade-up text-xs font-semibold uppercase tracking-widest text-primary mb-12">
           Education

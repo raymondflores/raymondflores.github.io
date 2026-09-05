@@ -73,6 +73,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Reserve the scrollbar gutter so locking the body while the command
+     palette is open does not shift the page underneath it. */
+  scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: reduce) {
